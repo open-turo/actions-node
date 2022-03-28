@@ -10,6 +10,9 @@ jobs:
     steps:
       - name: Test
         uses: open-turo/actions-node/test@v1
+        with:
+          ## example value for github-token provided below
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 Note: by default, this action will perform actions/checkout as its first step.

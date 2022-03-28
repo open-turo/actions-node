@@ -1,35 +1,35 @@
-name: "GitHub Action Release & Publish"
-description: "Publish a new release of the Action - adds a new major tag"
+name: GitHub Action Release & Publish
+description: Publish a new release of the Action - adds a new major tag
 inputs:
   checkout-repo:
     required: false
-    description: "Perform checkout as first step of action"
+    description: Perform checkout as first step of action
     default: "true"
   github-token:
     required: true
-    description: "GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'"
+    description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
   node-version:
     required: true
-    description: "The version of Node.js to setup and use with Yarn"
+    description: The version of Node.js to setup and use with Yarn
     default: "16"
   artifactory-npm-auth-token:
     required: true
-    description: "The Node Package Manager (npm) authentication token recognized by Artifactory"
+    description: The Node Package Manager (npm) authentication token recognized by Artifactory
   dry-run:
     required: false
-    description: "Whether to run semantic release in `dry-run` mode. It will override the dryRun attribute in your configuration file"
+    description: Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file
   extra-plugins:
     required: false
-    description: "Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer."
+    description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.
 outputs:
   new-release-published:
-    description: "Whether a new release was published"
-    value: ${{ steps.release.outputs.new_release_published }}
+    description: Whether a new release was published
+    value: ${{ steps.release.outputs.new-release-published }}
   new-release-version:
-    description: "Version of the new release"
-    value: ${{ steps.release.outputs.new_release_version }}
+    description: Version of the new release
+    value: ${{ steps.release.outputs.new-release-version }}
   new-release-major-version:
-    description: "Major version of the new release"
+    description: Major version of the new release
     value: ${{ steps.release.outputs.release-major }}
 runs:
   using: composite

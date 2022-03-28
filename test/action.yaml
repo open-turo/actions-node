@@ -1,16 +1,16 @@
-name: "node Test"
-description: "Tests node based repository"
+name: node Test
+description: Tests node based repository
 inputs:
   checkout-repo:
     required: false
-    description: "Perform checkout as first step of action"
+    description: Perform checkout as first step of action
     default: "true"
   github-token:
     required: true
-    description: "GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'"
+    description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
   node-version:
     required: true
-    description: "The version of Node.js to setup and use with Yarn"
+    description: The version of Node.js to setup and use with Yarn
     default: "16"
 runs:
   using: composite
@@ -18,8 +18,6 @@ runs:
     - name: Checkout
       uses: actions/checkout@v2
       if: inputs.checkout-repo
-      with:
-        fetch-depth: 0
     - name: Setup node
       uses: actions/setup-node@v2
       with:
