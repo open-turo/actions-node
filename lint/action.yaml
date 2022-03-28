@@ -1,16 +1,16 @@
-name: "node Lint"
-description: "Lints node based repository"
+name: node Lint
+description: Lints node based repository
 inputs:
   checkout-repo:
     required: false
-    description: "Perform checkout as first step of action"
+    description: Perform checkout as first step of action
     default: "true"
   github-token:
     required: true
-    description: "GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'"
+    description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
   node-version:
     required: true
-    description: "The version of Node.js to setup and use with Yarn"
+    description: The version of Node.js to setup and use with Yarn
     default: "16"
 runs:
   using: composite

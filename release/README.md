@@ -16,10 +16,13 @@ Note: by default, this action will perform actions/checkout as its first step.
 
 ```yaml
 steps:
-  - name: Action semantic release
+  - name: Release
     uses: open-turo/actions-node/release@v1
     with:
+      ## example value for github-token provided below
       github-token: ${{ secrets.GITHUB_TOKEN }}
+      ## example value for artifactory-npm-auth-token provided below
+      artifactory-npm-auth-token: ${{ secrets.ANAT }}
 ```
 
 **IMPORTANT**: `GITHUB_TOKEN` does not have the required permissions to operate on protected branches.
@@ -48,9 +51,7 @@ Github Action Workflow:
 
 ```yaml
 steps:
-  - name: Checkout
-    uses: actions/checkout@v2
-  - name: Action Semantic Release
+  - name: Release
     uses: open-turo/actions-node/release@v1
     with:
       # You can specify specifying version range for the extra plugins if you prefer.
@@ -80,11 +81,7 @@ Release Config:
 jobs:
   build:
     steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-        with:
-          fetch-depth: 0
-      - name: Action Semantic Release
+      - name: Release
         uses: open-turo/actions-node/release@v1
         with:
           dry-run: true
@@ -106,16 +103,11 @@ jobs:
 jobs:
   build:
     steps:
-      - uses: open-turo/actions-node/release@v1
+      - name: Release
+        uses: open-turo/actions-node/release@v1
         id: release # Need an `id` for output variables
         with:
-          fetch-depth: 0
-      - name: Semantic Release
-        uses: open-turo/actions-node/release@v1
-        id: semantic # Need an `id` for output variables
-        with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Do something when a new release published
         if: steps.release.outputs.new-release-published == 'true'
         run: |
