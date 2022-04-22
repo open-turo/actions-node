@@ -1,10 +1,10 @@
 # GitHub Action Release
 
-GitHub Action for [Semantic Release][semantic-url].
+## Description
 
-## Usage
+GitHub Action that publishes a new release.
 
-Note: by default, this action will perform actions/checkout as its first step.
+## Configuration
 
 ### Step1: Set any [Semantic Release Configuration](https://github.com/semantic-release/semantic-release/blob/master/docs/usage/configuration.md#configuration) in your repository.
 
@@ -12,7 +12,7 @@ Note: by default, this action will perform actions/checkout as its first step.
 
 ### Step3: Add a [Workflow File](https://help.github.com/en/articles/workflow-syntax-for-github-actions) to your repository to create custom automated processes.
 
-#### Basic Usage:
+## Usage
 
 ```yaml
 steps:
@@ -26,26 +26,38 @@ steps:
 ```
 
 **IMPORTANT**: `GITHUB_TOKEN` does not have the required permissions to operate on protected branches.
-If you are using this action for protected branches, replace `GITHUB_TOKEN` with [Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line). If using the `@semantic-release/git` plugin for protected branches, avoid persisting credentials as part of `actions/checkout@v2` by setting the parameter `persist-credentials: false`. This credential does not have the required permission to operate on protected branches.
+If you are using this action for protected branches, replace `GITHUB_TOKEN` with [Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line). If using the `@semantic-release/git` plugin for protected branches, avoid persisting credentials as part of `actions/checkout@v3` by setting the parameter `persist-credentials: false`. This credential does not have the required permission to operate on protected branches.
 
-### Inputs
+## Inputs
 
-|      Input Parameter       | Required | Description                                                                                                            |
-| :------------------------: | :------: | ---------------------------------------------------------------------------------------------------------------------- |
-|       checkout-repo        |  false   | Whether to perform repository checkout as first step or not                                                            |
-|        github-token        |   true   | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'" |
-|        node-version        |   true   | The version of Node.js to setup and use with Yarn                                                                      |
-| artifactory-npm-auth-token |   true   | The Node Package Manager (npm) authentication token recognized by Artifactory                                          |
-|          dry-run           |  false   | Whether to run semantic release in `dry-run` mode. [[Details](#dry_run)]                                               |
-|       extra-plugins        |  false   | Extra plugins for pre-install. [[Details](#extra_plugins)]                                                             |
+| parameter                  | description                                                                                                           | required | default |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| checkout-repo              | Perform checkout as first step of action                                                                              | `false`  | true    |
+| github-token               | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
+| node-version               | The version of Node.js to setup and use with Yarn                                                                     | `true`   | 16      |
+| artifactory-npm-auth-token | The Node Package Manager (npm) authentication token recognized by Artifactory                                         | `true`   |         |
+| dry-run                    | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file | `false`  | `false` |
+| extra-plugins              | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.     | `false`  |         |
 
-#### extra-plugins
+## Outputs
 
-> {Optional Input Parameter} Extra plugins for pre-install.
+| parameter                 | description                         |
+| ------------------------- | ----------------------------------- |
+| new-release-published     | Whether a new release was published |
+| new-release-version       | Version of the new release          |
+| new-release-major-version | Major version of the new release    |
 
-The action can be used with `extra_plugins` option to specify plugins which are not in the [default list of plugins of semantic release](https://semantic-release.gitbook.io/semantic-release/usage/plugins#default-plugins). When using this option, please make sure that these plugins are also mentioned in your [semantic release config's plugins](https://semantic-release.gitbook.io/semantic-release/usage/configuration#plugins) array.
+## Runs
 
-For example, if you want to use `@semantic-release/git` and `@semantic-release/changelog` extra plugins, these must be added to `extra_plugins` in your actions file and `plugins` in your [release config file](https://semantic-release.gitbook.io/semantic-release/usage/configuration#configuration-file) as shown bellow:
+This action is an `composite` action.
+
+## Additional Examples
+
+### extra-plugins example
+
+The Action can be used with `extra-plugins` option to specify plugins which are not in the [default list of plugins of semantic release](https://semantic-release.gitbook.io/semantic-release/usage/plugins#default-plugins). When using this option, please make sure that these plugins are also mentioned in your [semantic release config's plugins](https://semantic-release.gitbook.io/semantic-release/usage/configuration#plugins) array.
+
+For example, if you want to use `@semantic-release/git` and `@semantic-release/changelog` extra plugins, these must be added to `extra-plugins` in your actions file and `plugins` in your [release config file](https://semantic-release.gitbook.io/semantic-release/usage/configuration#configuration-file) as shown bellow:
 
 Github Action Workflow:
 
@@ -73,9 +85,7 @@ Release Config:
   ]
 ```
 
-#### dry-run
-
-> {Optional Input Parameter} Whether to run semantic release in `dry-run` mode.<br>It will override the dryRun attribute in your configuration file.
+### dry-run example
 
 ```yaml
 jobs:
@@ -88,16 +98,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Outputs
-
-|     Output Parameter      | Description                                                                                                                       |
-| :-----------------------: | --------------------------------------------------------------------------------------------------------------------------------- |
-|   new-release-published   | Whether a new release was published (`true` or `false`)                                                                           |
-|    new-release-version    | Version of the new release. (e.g. `1.3.0`)                                                                                        |
-| new-release-major-version | Major version of the new release. (e.g. `1`)                                                                                      |
-|    new-release-channel    | The distribution channel on which the last release was initially made available (undefined for the default distribution channel). |
-
-#### Using Output Variables:
+### using output parameters example
 
 ```yaml
 jobs:
@@ -105,12 +106,16 @@ jobs:
     steps:
       - name: Release
         uses: open-turo/actions-node/release@v1
-        id: release # Need an `id` for output variables
+        id: semantic # Need an `id` for output variables
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
       - name: Do something when a new release published
-        if: steps.release.outputs.new-release-published == 'true'
+        if: steps.semantic.outputs.new-release-published == 'true'
         run: |
           echo ${{ steps.semantic.outputs.new-release-version }}
           echo ${{ steps.semantic.outputs.new-release-major-version }}
 ```
+
+## Notes
+
+- By default, this action will perform actions/checkout as its first step.

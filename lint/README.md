@@ -1,6 +1,8 @@
 # GitHub Action Lint
 
-GitHub Action runs lint on a node based GitHub repository
+## Description
+
+GitHub Action that lints a Node based repository
 
 ## Usage
 
@@ -15,7 +17,17 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Note: by default, this action will perform actions/checkout as its first step.
+## Inputs
+
+| parameter     | description                                                                | required | default |
+| ------------- | -------------------------------------------------------------------------- | -------- | ------- |
+| checkout-repo | Perform checkout as first step of action                                   | `false`  | true    |
+| github-token  | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
+| node-version  | The version of Node.js to setup and use with Yarn                          | `true`   | 16      |
+
+## Runs
+
+This action is an `composite` action.
 
 ## Lint Checks
 
@@ -25,5 +37,5 @@ This action runs the following lint checks:
 
 ## Notes
 
+- By default, this action will perform actions/checkout as its first step.
 - This expects that `.commitlintrc.yaml` will be present to enforce [`conventional-commit`](https://github.com/wagoid/commitlint-github-action).
-- Checkout must have history to ensure that commit message linting works.
