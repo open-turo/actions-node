@@ -1,6 +1,8 @@
 # GitHub Action Test
 
-GitHub Action that runs tests present within a node based GitHub repository.
+## Description
+
+GitHub Action that tests a node based repository
 
 ## Usage
 
@@ -15,7 +17,17 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Note: by default, this action will perform actions/checkout as its first step.
+## Inputs
+
+| parameter     | description                                                                | required | default |
+| ------------- | -------------------------------------------------------------------------- | -------- | ------- |
+| checkout-repo | Perform checkout as first step of action                                   | `false`  | true    |
+| github-token  | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
+| node-version  | The version of Node.js to setup and use with Yarn                          | `true`   | 16      |
+
+## Runs
+
+This action is an `composite` action.
 
 ## Test
 
@@ -25,3 +37,7 @@ It will run:
 yarn --pure-lockfile
 yarn test --coverage
 ```
+
+## Notes
+
+- By default, this action will perform actions/checkout as its first step.

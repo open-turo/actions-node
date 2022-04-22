@@ -1,3 +1,31 @@
-# actions-node
+# `open-turo/actions-node`
 
-GitHub Actions for Node.js, Javascript, and Typescript repositories
+GitHub Actions for Node.js, JavaScript, and TypeScript based repositories
+
+## Actions
+
+### action: [`lint`](./lint)
+
+See usage [here](./lint/README.md#usage).
+
+Documentation is found [here](./lint/README.md).
+
+### action: [`release`](./release)
+
+See usage [here](./release/README.md#usage).
+
+Documentation is found [here](./release/README.md).
+
+### action: [`test`](./test)
+
+See usage [here](./test/README.md#usage).
+
+Documentation is found [here](./test/README.md).
+
+## Get Help
+
+Each Action has a detailed README for how to use it as referenced above. Please review Issues, post new Issues against this repository as needed.
+
+## Contributions
+
+Please see [here](https://github.com/open-turo/contributions) for guidelines on how to contribute to this project.

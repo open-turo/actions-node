@@ -1,5 +1,5 @@
 name: GitHub Action Release & Publish
-description: Publish a new release of the Action - adds a new major tag
+description: GitHub Action that publishes a new release.
 inputs:
   checkout-repo:
     required: false
@@ -18,6 +18,7 @@ inputs:
   dry-run:
     required: false
     description: Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file
+    default: "false"
   extra-plugins:
     required: false
     description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.
@@ -35,7 +36,7 @@ runs:
   using: composite
   steps:
     - name: Checkout
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
