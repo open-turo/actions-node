@@ -2,6 +2,10 @@
 
 GitHub Actions for Node.js, JavaScript, and TypeScript based repositories
 
+## Note: This action group is not ready for general use!
+
+These are stub actions that should be reviewed, refined, and implemented appropriately for JVM workflows.
+
 ## Actions
 
 ### action: [`lint`](./lint)
