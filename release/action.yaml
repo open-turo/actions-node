@@ -8,10 +8,6 @@ inputs:
   github-token:
     required: true
     description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
-  node-version:
-    required: true
-    description: The version of Node.js to setup and use with Yarn
-    default: "16"
   artifactory-npm-auth-token:
     required: true
     description: The Node Package Manager (npm) authentication token recognized by Artifactory
@@ -40,13 +36,8 @@ runs:
       if: inputs.checkout-repo
       with:
         fetch-depth: 0
-    - name: Setup node
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ inputs.node-version }}
-    - name: Install Yarn
-      shell: bash
-      run: npm install -g yarn
+    - name: Setup tools
+      uses: open-turo/action-setup-tools@v1
     - name: Install dependencies
       shell: bash
       run: yarn --pure-lockfile

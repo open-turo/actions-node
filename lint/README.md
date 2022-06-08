@@ -23,7 +23,6 @@ jobs:
 | ------------- | -------------------------------------------------------------------------- | -------- | ------- |
 | checkout-repo | Perform checkout as first step of action                                   | `false`  | true    |
 | github-token  | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
-| node-version  | The version of Node.js to setup and use with Yarn                          | `true`   | 16      |
 
 ## Runs
 
