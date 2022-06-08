@@ -9,7 +9,7 @@ inputs:
     required: true
     description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
   npm-auth-token:
-    required: true
+    required: false
     description: The Node Package Manager (npm) authentication token
   dry-run:
     required: false
