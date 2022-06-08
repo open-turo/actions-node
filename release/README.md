@@ -36,7 +36,7 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 | dry-run        | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file | `false`  | `false` |
 | extra-plugins  | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.     | `false`  |         |
 | github-token   | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
-| npm-auth-token | The Node Package Manager (npm) authentication token                                                                   | `true`   |         |
+| npm-auth-token | The Node Package Manager (npm) authentication token                                                                   | `false`  |         |
 
 ## Outputs
 
