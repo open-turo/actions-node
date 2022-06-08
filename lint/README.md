@@ -22,6 +22,7 @@ jobs:
 | parameter      | description                                                                | required | default |
 | -------------- | -------------------------------------------------------------------------- | -------- | ------- |
 | checkout-repo  | Perform checkout as first step of action                                   | `false`  | true    |
+| eslint-flags   | Flags and args of eslint command                                           | `false`  |         |
 | github-token   | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
 | npm-auth-token | The Node Package Manager (npm) authentication token                        | `false`  |         |
 
