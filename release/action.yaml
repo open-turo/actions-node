@@ -8,9 +8,9 @@ inputs:
   github-token:
     required: true
     description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
-  artifactory-npm-auth-token:
+  npm-auth-token:
     required: true
-    description: The Node Package Manager (npm) authentication token recognized by Artifactory
+    description: The Node Package Manager (npm) authentication token
   dry-run:
     required: false
     description: Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file
@@ -42,13 +42,13 @@ runs:
       shell: bash
       run: yarn --pure-lockfile
       env:
-        NPM_CONFIG_AUTH: ${{ inputs.artifactory-npm-auth-token }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Build
       shell: bash
       run: yarn build
       env:
         NODE_ENV: production
-        NPM_CONFIG_AUTH: ${{ inputs.artifactory-npm-auth-token }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Release
       uses: cycjimmy/semantic-release-action@v2
       with:
