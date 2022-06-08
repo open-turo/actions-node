@@ -5,6 +5,9 @@ inputs:
     required: false
     description: Perform checkout as first step of action
     default: "true"
+  eslint-flags:
+    required: false
+    description: Flags and args of eslint command
   github-token:
     required: true
     description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
@@ -30,7 +33,7 @@ runs:
       uses: reviewdog/action-eslint@v1
       with:
         github_token: ${{ inputs.github-token }}
-        eslint_flags: ./src --ext .ts
+        eslint_flags: ${{ inputs.eslint-flags }}
         reporter: github-check
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
