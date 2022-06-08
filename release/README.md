@@ -21,8 +21,8 @@ steps:
     with:
       ## example value for github-token provided below
       github-token: ${{ secrets.GITHUB_TOKEN }}
-      ## example value for artifactory-npm-auth-token provided below
-      artifactory-npm-auth-token: ${{ secrets.ANAT }}
+      ## example value for npm-auth-token provided below
+      npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
 ```
 
 **IMPORTANT**: `GITHUB_TOKEN` does not have the required permissions to operate on protected branches.
@@ -30,13 +30,13 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 
 ## Inputs
 
-| parameter                  | description                                                                                                           | required | default |
-| -------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| checkout-repo              | Perform checkout as first step of action                                                                              | `false`  | true    |
-| github-token               | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
-| artifactory-npm-auth-token | The Node Package Manager (npm) authentication token recognized by Artifactory                                         | `true`   |         |
-| dry-run                    | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file | `false`  | `false` |
-| extra-plugins              | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.     | `false`  |         |
+| parameter      | description                                                                                                           | required | default |
+| -------------- | --------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| checkout-repo  | Perform checkout as first step of action                                                                              | `false`  | true    |
+| dry-run        | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file | `false`  | `false` |
+| extra-plugins  | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.     | `false`  |         |
+| github-token   | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
+| npm-auth-token | The Node Package Manager (npm) authentication token                                                                   | `true`   |         |
 
 ## Outputs
 
