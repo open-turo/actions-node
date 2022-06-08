@@ -50,8 +50,9 @@ runs:
         NODE_ENV: production
         NPM_CONFIG_AUTH: ${{ inputs.artifactory-npm-auth-token }}
     - name: Release
+      uses: cycjimmy/semantic-release-action@v2
+      with:
+        dry_run: ${{ inputs.dry-run }}
+        extra_plugins: ${{ inputs.extra-plugins }}
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
-        NPM_CONFIG_AUTH: ${{ inputs.artifactory-npm-auth-token }}
-      shell: bash
-      run: yarn semantic-release
