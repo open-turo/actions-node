@@ -8,6 +8,9 @@ inputs:
   github-token:
     required: true
     description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
+  npm-auth-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token
 runs:
   using: composite
   steps:
@@ -21,6 +24,8 @@ runs:
     - name: Install dependencies
       shell: bash
       run: yarn --pure-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Eslint
       uses: reviewdog/action-eslint@v1
       with:
