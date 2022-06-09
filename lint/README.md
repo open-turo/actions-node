@@ -35,6 +35,7 @@ This action is an `composite` action.
 This action runs the following lint checks:
 
 - [action-pre-commit](https://github.com/open-turo/action-pre-commit)
+- eslint via [reviewdog](https://github.com/reviewdog/action-eslint)
 
 ## Notes
 

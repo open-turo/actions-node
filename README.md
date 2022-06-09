@@ -14,7 +14,7 @@ GitHub Actions for `node` based repositories. It uses `yarn` as package manager.
 
 ### action: [`lint`](./lint)
 
-Lint will run pre-commit linters against the consumer repository, optionally checking out, and installing node, yarn and any other required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools).
+Lint will run pre-commit linters and eslint against the consumer repository, optionally checking out, and installing node, yarn and any other required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools).
 
 See usage [here](./lint/README.md#usage).
 
