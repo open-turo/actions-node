@@ -12,6 +12,10 @@ inputs:
   npm-auth-token:
     required: false
     description: The Node Package Manager (npm) authentication token
+  test-flags:
+    required: false
+    description: Flags and args for test command
+    default: ""
 runs:
   using: composite
   steps:
@@ -27,4 +31,4 @@ runs:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Run tests
       shell: bash
-      run: yarn test --coverage
+      run: yarn test ${{ inputs.test-flags }}
