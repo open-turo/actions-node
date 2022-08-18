@@ -49,6 +49,6 @@ runs:
         level: ${{ inputs.level }}
         fail_on_error: ${{ inputs.fail-on-error }}
         eslint_flags: ${{ inputs.eslint-flags }}
-        reporter: github-check
+        reporter: github-pr-review
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
