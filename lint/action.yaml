@@ -12,6 +12,10 @@ inputs:
     required: true
     description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
     default: ${{ github.token }}
+  level:
+    required: false
+    description: The output status behavior we want for the action
+    default: "error"
   npm-auth-token:
     required: false
     description: The Node Package Manager (npm) authentication token
@@ -34,6 +38,7 @@ runs:
       uses: reviewdog/action-eslint@v1
       with:
         github_token: ${{ inputs.github-token }}
+        level: ${{ inputs.level }}
         eslint_flags: ${{ inputs.eslint-flags }}
         reporter: github-check
     - name: Pre-commit
