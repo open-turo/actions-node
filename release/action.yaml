@@ -51,6 +51,7 @@ runs:
         NODE_ENV: production
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Release
+      id: release
       uses: cycjimmy/semantic-release-action@v3
       with:
         dry_run: ${{ inputs.dry-run }}
