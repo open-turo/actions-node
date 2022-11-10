@@ -11,7 +11,7 @@ jobs:
   build:
     steps:
       - name: Lint
-        uses: open-turo/actions-node/lint@v1
+        uses: open-turo/actions-node/lint@v3
         with:
           ## example value for github-token provided below
           github-token: ${{ secrets.GITHUB_TOKEN }}
