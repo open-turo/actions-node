@@ -17,7 +17,7 @@ GitHub Action that publishes a new release.
 ```yaml
 steps:
   - name: Release
-    uses: open-turo/actions-node/release@v1
+    uses: open-turo/actions-node/release@v3
     with:
       ## example value for github-token provided below
       github-token: ${{ secrets.GITHUB_TOKEN }}

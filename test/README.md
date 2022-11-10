@@ -11,7 +11,7 @@ jobs:
   test:
     steps:
       - name: Test
-        uses: open-turo/actions-node/test@v1
+        uses: open-turo/actions-node/test@v3
         with:
           ## example value for github-token provided below
           github-token: ${{ secrets.GITHUB_TOKEN }}
