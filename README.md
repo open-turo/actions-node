@@ -2,13 +2,14 @@
 
 GitHub Actions for `node` based repositories. It uses `yarn` as package manager.
 
-[![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/)
-[![Release date][release-date-image]][release-url]
-[![GitHub latest commit](https://badgen.net/github/last-commit/Naereen/Strapdown.js)](https://GitHub.com/Naereen/StrapDown.js/commit/)
-[![GitHub license](https://img.shields.io/github/license/Naereen/StrapDown.js.svg)](https://github.com/Naereen/StrapDown.js/blob/master/LICENSE)
+[![Release](https://img.shields.io/github/v/release/open-turo/actions-node)](https://github.com/open-turo/actions-node/releases/)
+[![Tests pass/fail](https://img.shields.io/github/workflow/status/open-turo/actions-node/CI)](https://github.com/open-turo/actions-node/actions/)
+[![License](https://img.shields.io/github/license/open-turo/actions-node)](./LICENSE)
+[![Contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](https://github.com/dwyl/esta/issues)
 ![CI](https://github.com/open-turo/actions-node/actions/workflows/release.yaml/badge.svg)
-[![semantic-release][semantic-image]][semantic-url]
-[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+[![semantic-release: angular](https://img.shields.io/badge/semantic--release-angular-e10079?logo=semantic-release)](https://github.com/semantic-release/semantic-release)
+[![Conventional commits](https://img.shields.io/badge/conventional%20commits-1.0.2-%23FE5196?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
+[![Join us!](https://img.shields.io/badge/Turo-Join%20us%21-593CFB.svg)](https://turo.com/jobs)
 
 ## Actions
 
