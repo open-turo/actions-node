@@ -38,6 +38,10 @@ runs:
       with:
         fetch-depth: ${{ inputs.checkout-repo == 'true' && 0 || 1 }}
         persist-credentials: false
+    - name: Authorize
+      uses: open-turo/action-git-auth@v2
+      with:
+        github-personal-access-token: ${{ inputs.github-token }}
     - name: Setup tools
       uses: open-turo/action-setup-tools@v1
     - name: Install dependencies
