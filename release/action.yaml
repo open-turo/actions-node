@@ -40,14 +40,34 @@ runs:
         persist-credentials: false
     - name: Setup tools
       uses: open-turo/action-setup-tools@v1
-    - name: Install dependencies
+    - name: Check for yarn.lock
+      id: check_yarn_lock
+      uses: andstor/file-existence-action@v2
+      with:
+        files: yarn.lock
+    - name: Install dependencies (yarn)
+      if: steps.check_yarn_lock.outputs.files_exists == 'true'
       shell: bash
       run: yarn --pure-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-    - name: Build
+    - name: Install dependencies (npm)
+      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      shell: bash
+      run: npm ci
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Build (yarn)
+      if: steps.check_yarn_lock.outputs.files_exists == 'true'
       shell: bash
       run: yarn build
+      env:
+        NODE_ENV: production
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Build (npm)
+      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      shell: bash
+      run: npm run build
       env:
         NODE_ENV: production
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
