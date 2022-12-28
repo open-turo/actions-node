@@ -19,14 +19,15 @@ jobs:
 
 ## Inputs
 
-| parameter      | description                                                                | required | default |
-| -------------- | -------------------------------------------------------------------------- | -------- | ------- |
-| checkout-repo  | Perform checkout as first step of action                                   | `false`  | true    |
-| eslint-flags   | Flags and args of eslint command                                           | `false`  |         |
-| fail-on-error  | Exit code for reviewdog when errors are found [true, false]                | `false`  | false   |
-| github-token   | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true`   |         |
-| level          | The output status behavior we want for the action [error, warning, info]   | `false`  | error   |
-| npm-auth-token | The Node Package Manager (npm) authentication token                        | `false`  |         |
+| parameter      | description                                                                                                                                          | required | default |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| checkout-repo  | Perform checkout as first step of action                                                                                                             | `false`  | true    |
+| eslint-flags   | Flags and args of eslint command                                                                                                                     | `false`  |         |
+| fail-on-error  | Exit code for reviewdog when errors are found [true, false]                                                                                          | `false`  | false   |
+| github-token   | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'                                                                           | `true`   |         |
+| level          | The output status behavior we want for the action [error, warning, info]                                                                             | `false`  | error   |
+| npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false`  |         |
+| npm-token      | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.                                    | `false`  |         |
 
 ## Runs
 

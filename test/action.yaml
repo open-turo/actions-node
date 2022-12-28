@@ -11,7 +11,10 @@ inputs:
     default: ${{ github.token }}
   npm-auth-token:
     required: false
-    description: The Node Package Manager (npm) authentication token
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
   test-flags:
     required: false
     description: Flags and args for test command
@@ -35,21 +38,25 @@ runs:
       run: yarn --pure-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Install dependencies (npm)
       if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
       run: npm ci
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Run tests (yarn)
       if: steps.check_yarn_lock.outputs.files_exists == 'true'
       shell: bash
       run: yarn test ${{ inputs.test-flags }}
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Run tests (npm)
       if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
       run: npm run test ${{ inputs.test-flags }}
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}

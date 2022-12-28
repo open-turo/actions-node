@@ -11,7 +11,10 @@ inputs:
     default: ${{ github.token }}
   npm-auth-token:
     required: false
-    description: The Node Package Manager (npm) authentication token
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
   dry-run:
     required: false
     description: Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file
@@ -51,12 +54,14 @@ runs:
       run: yarn --pure-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Install dependencies (npm)
       if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
       run: npm ci
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Build (yarn)
       if: steps.check_yarn_lock.outputs.files_exists == 'true'
       shell: bash
@@ -64,6 +69,7 @@ runs:
       env:
         NODE_ENV: production
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Build (npm)
       if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
@@ -71,6 +77,7 @@ runs:
       env:
         NODE_ENV: production
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Release
       id: release
       uses: cycjimmy/semantic-release-action@v3
@@ -80,3 +87,4 @@ runs:
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}

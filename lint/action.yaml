@@ -26,7 +26,10 @@ inputs:
     default: "error"
   npm-auth-token:
     required: false
-    description: The Node Package Manager (npm) authentication token
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
 runs:
   using: composite
   steps:
