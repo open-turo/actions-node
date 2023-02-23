@@ -67,3 +67,5 @@ runs:
         reporter: github-pr-review
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
+    - name: Beta Release Check
+      run: bash ./lint/scripts/beta-check.sh
