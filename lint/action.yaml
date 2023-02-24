@@ -30,6 +30,10 @@ inputs:
   npm-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  internal-dependency-prefixes:
+    required: false
+    description: Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'.
+    default: ""
 runs:
   using: composite
   steps:
@@ -67,5 +71,7 @@ runs:
         reporter: github-pr-review
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
-    - name: Beta Release Check
-      run: bash ./lint/scripts/beta-check.sh
+    - if: ${{ inputs.internal-dependency-prefixes != '' }}
+      name: Beta Release Check
+      run: ./lint/scripts/beta-check.sh ${{ inputs.internal-dependency-prefixes }}
+      shell: bash
