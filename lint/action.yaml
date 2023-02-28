@@ -72,11 +72,19 @@ runs:
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
     - if: ${{ inputs.internal-dependency-prefixes != '' }}
-      name: Beta Release Check
+      name: Create Beta Release Check Script
       run: |
-        delimited_prefixes=$(sed 's/ *, */|/g' <<< ${{ inputs.internal-dependency-prefixes }})
+        cat << 'EOF' > "${{ runner.temp }}/beta-check.sh"
+        set -e
+        delimited_prefixes=$(sed 's/ *, */|/g' <<< $1)
         if egrep "($delimited_prefixes).*\-beta\-" package.json; then
           echo "ERROR: should not consume a beta version of an internal dependency. Make sure to revert/update to use a proper release."
           exit 1
         fi
+        EOF
+        chmod +x ${{ runner.temp }}/beta-check.sh
+      shell: bash
+    - if: ${{ inputs.internal-dependency-prefixes != '' }}
+      name: Run Beta Release Check
+      run: bash ${{ runner.temp }}/beta-check.sh ${{ inputs.internal-dependency-prefixes }}
       shell: bash
