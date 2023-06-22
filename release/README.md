@@ -34,7 +34,7 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 | -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
 | checkout-repo  | Perform checkout as first step of action                                                                                                             | `false`  | true    |
 | dry-run        | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file                                | `false`  | `false` |
-| extra-plugins  | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.                                    | `false`  |         |
+| extra-plugins    | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer. Defaults to install @open-turo/semantic-release-config. | `false`  | @open-turo/semantic-release-config@^1.4.0 |
 | github-token   | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'                                | `true`   |         |
 | npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false`  |         |
 | npm-token      | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.                                    | `false`  |         |
