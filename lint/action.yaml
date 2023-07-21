@@ -7,7 +7,7 @@ inputs:
     default: "true"
   lint-script:
     required: false
-    description: Custom script defined in package.json to run.
+    description: Custom script to run, should be defined in package.json.
     default: "lint"
   github-token:
     required: true
