@@ -5,9 +5,10 @@ inputs:
     required: false
     description: Perform checkout as first step of action
     default: "true"
-  eslint-flags:
+  lint-script:
     required: false
-    description: Flags and args of eslint command
+    description: Custom script defined in package.json to run.
+    default: "lint"
   github-token:
     required: true
     description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
@@ -49,9 +50,20 @@ runs:
       run: npm ci
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-    - name: Run eslint
+    - name: Run lint script (npm)
+      if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
-      run: npx eslint ${{ inputs.eslint-flags }}
+      run: npm run ${{ inputs.lint-script }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Run lint script (yarn)
+      if: steps.check_yarn_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: yarn ${{ inputs.lint-script }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Pre-commit
       uses: open-turo/action-pre-commit@v1
     - if: ${{ inputs.internal-dependency-prefixes != '' }}
