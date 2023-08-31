@@ -23,17 +23,17 @@ inputs:
     required: false
     description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.
     default: |
-      @open-turo/semantic-release-config@^1.4.0
+      @open-turo/semantic-release-config@v3
 outputs:
   new-release-published:
     description: Whether a new release was published
-    value: ${{ steps.release.outputs.new_release_published }}
+    value: ${{ steps.release.outputs.new-release-published }}
   new-release-version:
     description: Version of the new release
-    value: ${{ steps.release.outputs.new_release_version }}
+    value: ${{ steps.release.outputs.new-release-version }}
   new-release-major-version:
     description: Major version of the new release
-    value: ${{ steps.release.outputs.new_release_major_version }}
+    value: ${{ steps.release.outputs.new-release-major-version }}
 runs:
   using: composite
   steps:
@@ -82,11 +82,11 @@ runs:
         NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Release
       id: release
-      uses: cycjimmy/semantic-release-action@v3
+      uses: open-turo/actions-release/semantic-release@v2
       with:
-        dry_run: ${{ inputs.dry-run }}
-        extra_plugins: ${{ inputs.extra-plugins }}
+        dry-run: ${{ inputs.dry-run }}
+        extra-plugins: ${{ inputs.extra-plugins }}
+        github-token: ${{ inputs.github-token }}
       env:
-        GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
