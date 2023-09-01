@@ -1,10 +1,18 @@
 name: CI
 
 on:
-  pull_request:
-    branches: [main]
+  push:
 
 jobs:
+  release-notes:
+    name: Release notes preview
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    steps:
+      - uses: open-turo/actions-release/release-notes-preview@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
