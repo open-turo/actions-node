@@ -88,5 +88,6 @@ runs:
         extra-plugins: ${{ inputs.extra-plugins }}
         github-token: ${{ inputs.github-token }}
       env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
