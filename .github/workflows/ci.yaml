@@ -6,15 +6,6 @@ on:
     branches: [main]
 
 jobs:
-  release-notes:
-    name: Release notes preview
-    runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
-    steps:
-      - uses: open-turo/actions-release/lint-release-notes@v4
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-
   lint:
     name: Lint
     runs-on: ubuntu-latest
