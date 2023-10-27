@@ -89,3 +89,6 @@ runs:
       name: Run Beta Release Check
       run: bash ${{ runner.temp }}/beta-check.sh ${{ inputs.internal-dependency-prefixes }}
       shell: bash
+    - name: Check release notes on pull_request
+      if: github.event_name == 'pull_request'
+      uses: open-turo/actions-release/lint-release-notes@v4
