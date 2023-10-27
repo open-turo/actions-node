@@ -82,7 +82,7 @@ runs:
         NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Release
       id: release
-      uses: open-turo/actions-release/semantic-release@v2
+      uses: open-turo/actions-release/semantic-release@v4
       with:
         dry-run: ${{ inputs.dry-run }}
         extra-plugins: ${{ inputs.extra-plugins }}
