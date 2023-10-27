@@ -33,10 +33,24 @@ This action runs the following lint checks:
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| checkout-repo | Perform checkout as first step of action | `false` | true |
+| lint-script | Custom script to run, should be defined in package.json. | `false` | lint |
+| github-token | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true` | ${{ github.token }} |
+| npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false` |  |
+| npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
+| internal-dependency-prefixes | Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'. | `false` |  |
 <!-- action-docs-inputs -->
 <!-- action-docs-outputs -->
+
 <!-- action-docs-outputs -->
 <!-- action-docs-runs -->
+## Runs
+
+This action is a `composite` action.
 <!-- action-docs-runs -->
 <!-- action-docs-usage  -->
 <!-- action-docs-usage -->

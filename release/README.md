@@ -30,10 +30,30 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs -->
+## Inputs
+
+| parameter | description | required | default |
+| --- | --- | --- | --- |
+| checkout-repo | Perform checkout as first step of action | `false` | true |
+| github-token | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true` | ${{ github.token }} |
+| npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false` |  |
+| npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
+| dry-run | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file | `false` | false |
+| extra-plugins | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config. | `false` | @open-turo/semantic-release-config  |
 <!-- action-docs-inputs -->
 <!-- action-docs-outputs -->
+## Outputs
+
+| parameter | description |
+| --- | --- |
+| new-release-published | Whether a new release was published |
+| new-release-version | Version of the new release |
+| new-release-major-version | Major version of the new release |
 <!-- action-docs-outputs -->
 <!-- action-docs-runs -->
+## Runs
+
+This action is a `composite` action.
 <!-- action-docs-runs -->
 <!-- action-docs-usage  -->
 <!-- action-docs-usage -->
