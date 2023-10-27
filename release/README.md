@@ -28,28 +28,16 @@ steps:
 **IMPORTANT**: `GITHUB_TOKEN` does not have the required permissions to operate on protected branches.
 If you are using this action for protected branches, replace `GITHUB_TOKEN` with [Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line). If using the `@semantic-release/git` plugin for protected branches, avoid persisting credentials as part of `actions/checkout@v3` by setting the parameter `persist-credentials: false`. This credential does not have the required permission to operate on protected branches.
 
-## Inputs
-
-| parameter      | description                                                                                                                                                               | required | default                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ----------------------------------------- |
-| checkout-repo  | Perform checkout as first step of action                                                                                                                                  | `false`  | true                                      |
-| dry-run        | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file                                                     | `false`  | `false`                                   |
-| extra-plugins  | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer. Defaults to install @open-turo/semantic-release-config. | `false`  | @open-turo/semantic-release-config@^1.4.0 |
-| github-token   | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'                                                     | `true`   |                                           |
-| npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.                      | `false`  |                                           |
-| npm-token      | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.                                                         | `false`  |                                           |
-
-## Outputs
-
-| parameter                 | description                         |
-| ------------------------- | ----------------------------------- |
-| new-release-published     | Whether a new release was published |
-| new-release-version       | Version of the new release          |
-| new-release-major-version | Major version of the new release    |
-
-## Runs
-
-This action is an `composite` action.
+<!-- prettier-ignore-start -->
+<!-- action-docs-inputs -->
+<!-- action-docs-inputs -->
+<!-- action-docs-outputs -->
+<!-- action-docs-outputs -->
+<!-- action-docs-runs -->
+<!-- action-docs-runs -->
+<!-- action-docs-usage  -->
+<!-- action-docs-usage -->
+<!-- prettier-ignore-end -->
 
 ## Additional Examples
 
