@@ -1,14 +1,14 @@
 exclude: dist/.*
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.1.0 # Use the ref you want to point at
+    rev: v4.5.0 # Use the ref you want to point at
     hooks:
       - id: check-json
       - id: check-yaml
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v8.9.0
+    rev: v8.52.0
     hooks:
       - id: eslint
   - repo: https://github.com/pre-commit/mirrors-prettier
@@ -23,6 +23,6 @@ repos:
         stages: [commit-msg]
         additional_dependencies: ["@open-turo/commitlint-config-conventional"]
   - repo: https://github.com/rhysd/actionlint
-    rev: v1.6.8
+    rev: v1.6.26
     hooks:
       - id: actionlint
