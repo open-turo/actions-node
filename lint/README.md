@@ -1,8 +1,12 @@
 # GitHub Action Lint
 
+<!-- prettier-ignore-start -->
+<!-- action-docs-description -->
 ## Description
 
 GitHub Action that lints a Node based repository
+<!-- action-docs-description -->
+<!-- prettier-ignore-end -->
 
 ## Usage
 

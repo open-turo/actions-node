@@ -1,8 +1,12 @@
 # GitHub Action Test
 
+<!-- prettier-ignore-start -->
+<!-- action-docs-description -->
 ## Description
 
 GitHub Action that tests a node based repository
+<!-- action-docs-description -->
+<!-- prettier-ignore-end -->
 
 ## Usage
 

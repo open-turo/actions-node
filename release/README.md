@@ -1,8 +1,12 @@
 # GitHub Action Release
 
+<!-- prettier-ignore-start -->
+<!-- action-docs-description -->
 ## Description
 
 GitHub Action that publishes a new release.
+<!-- action-docs-description -->
+<!-- prettier-ignore-end -->
 
 ## Configuration
 
