@@ -36,6 +36,10 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 | --- | --- | --- | --- |
 | checkout-repo | Perform checkout as first step of action | `false` | true |
 | github-token | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true` | ${{ github.token }} |
+| docker-config-file | Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile. | `false` | .docker-config.json |
+| docker-flavor | Docker flavor to use for docker metadata | `false` | latest=false  |
+| dockerhub-user | username for dockerhub | `false` |  |
+| dockerhub-password | password for dockerhub | `false` |  |
 | npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false` |  |
 | npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
 | dry-run | Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file | `false` | false |
