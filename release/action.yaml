@@ -64,22 +64,10 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
-    - name: Build (yarn)
-      if: steps.check_yarn_lock.outputs.files_exists == 'true'
-      shell: bash
-      run: yarn build
-      env:
-        NODE_ENV: production
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
-    - name: Build (npm)
-      if: steps.check_yarn_lock.outputs.files_exists == 'false'
-      shell: bash
-      run: npm run build
-      env:
-        NODE_ENV: production
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Build
+      uses: open-turo/actions-node/build@v5
+      with:
+        checkout-repo: false
     - name: Release
       id: release
       uses: open-turo/actions-release/semantic-release@v4
