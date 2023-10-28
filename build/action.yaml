@@ -1,0 +1,63 @@
+name: Build
+description: GitHub Action that builds Node based repository
+inputs:
+  checkout-repo:
+    required: false
+    description: Perform checkout as first step of action
+    default: "true"
+  build-script:
+    required: false
+    description: Custom script to run, should be defined in package.json.
+    default: "build"
+  github-token:
+    required: true
+    description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
+    default: ${{ github.token }}
+  npm-auth-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      if: inputs.checkout-repo == 'true'
+      with:
+        fetch-depth: 0
+    - name: Setup tools
+      uses: open-turo/action-setup-tools@v1
+    - name: Check for yarn.lock
+      id: check_yarn_lock
+      uses: andstor/file-existence-action@v2
+      with:
+        files: yarn.lock
+    - name: Install dependencies (yarn)
+      if: steps.check_yarn_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: yarn --pure-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Install dependencies (npm)
+      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      shell: bash
+      run: npm ci
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Run build script (npm)
+      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      shell: bash
+      run: npm run ${{ inputs.build-script }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Run lint script (yarn)
+      if: steps.check_yarn_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: yarn ${{ inputs.build-script }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
