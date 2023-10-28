@@ -9,6 +9,21 @@ inputs:
     required: true
     description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
     default: ${{ github.token }}
+  docker-config-file:
+    required: false
+    description: Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.
+    default: .docker-config.json
+  docker-flavor:
+    required: false
+    description: Docker flavor to use for docker metadata
+    default: |
+      latest=false
+  dockerhub-user:
+    required: false
+    description: username for dockerhub
+  dockerhub-password:
+    required: false
+    description: password for dockerhub
   npm-auth-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
@@ -79,3 +94,19 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
+    - uses: open-turo/actions-node/build-docker@v5
+      id: docker-build
+      if: dockerhub-user != '' && dockerhub-password != ''
+      with:
+        docker-config-file: ${{ inputs.docker-config-file }}
+        dockerhub-user: ${{ inputs.dockerhub-user }}
+        dockerhub-password: ${{ inputs.dockerhub-password }}
+        github-token: ${{ inputs.github-token }}
+        npm-auth-token: ${{ inputs.npm-auth-token }}
+        npm-token: ${{ inputs.npm-token }}
+        image-version: ${{ steps.release.outputs.new-release-version }}
+        docker-flavor: ${{ inputs.docker-flavor }}
+        docker-metadata-tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}},value=${{ steps.release.outputs.new-release-version }}
