@@ -1,0 +1,239 @@
+name: GitHub Action Prelease
+description: <
+  GitHub Action to compute a prerelease version based on the latest release version and the number of commits since the
+  latest release. Meant to only be run in the context of a pull request.
+  This will also generate a docker tag based on the computed version if the label `prerelease` is specified on the PR
+  and docker credentials are present
+inputs:
+  checkout-repo:
+    required: false
+    description: Perform checkout as first step of action
+    default: "true"
+  create-prerelease:
+    required: false
+    description: Whether semantic-release should create a prerelease or do a dry run. This can be useful to set to true when a prerelease requires pushing artifacts semantic-release is in charge of generating
+    default: "false"
+  github-token:
+    required: true
+    description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
+    default: ${{ github.token }}
+  docker-config-file:
+    required: false
+    description: Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.
+    default: .docker-config.json
+  dockerhub-user:
+    required: false
+    description: username for dockerhub
+  dockerhub-password:
+    required: false
+    description: password for dockerhub
+  npm-auth-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  extra-plugins:
+    required: false
+    description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.
+    default: |
+      @open-turo/semantic-release-config
+outputs:
+  new-release-published:
+    description: Whether a new release was published
+    value: ${{ steps.prerelease.outputs.new-release-published }}
+  new-release-version:
+    description: Version of the new release
+    value: ${{ steps.prerelease.outputs.new-release-version }}
+  new-release-major-version:
+    description: Major version of the new release
+    value: ${{ steps.prerelease.outputs.new-release-major_version }}
+  image-name:
+    description: Docker image name
+    value: ${{ steps.build-docker.outputs.image-name }}
+  image-with-tag:
+    description: Full image with tag - <image-name>:<image-version>
+    value: ${{ steps.build-docker.outputs.image-with-tag }}
+  pull-request-number:
+    description: Pull request number
+    value: ${{ steps.PR.outputs.number }}
+  run-url:
+    description: URL to the GHA run
+    value: ${{ steps.vars.outputs.run-url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Dump GitHub context
+      env:
+        GITHUB_CONTEXT: ${{ toJSON(github) }}
+      shell: bash
+      run: |
+        echo "::group::Github Context"
+        echo "$GITHUB_CONTEXT"
+        echo "::endgroup::"
+
+    - name: Set vars
+      id: source-vars
+      shell: bash
+      env:
+        event_name: ${{ github.event_name }}
+        dispatch_client_payload_ref: ${{ github.event.client_payload.ref }}
+        dispatch_client_payload_sha: ${{ github.event.client_payload.sha }}
+        push_ref_name: ${{ github.ref_name }}
+        push_sha: ${{ github.sha }}
+        pull_request_ref_name: ${{ github.event.pull_request.head.ref }}
+        pull_request_sha: ${{ github.event.pull_request.head.sha }}
+      run: |
+        echo "event_name=$event_name"
+
+        if [ "$event_name" == "push" ]; then
+          branch=$push_ref_name
+          sha=$push_sha
+        elif [ "$event_name" == "repository_dispatch" ]; then
+          branch=$dispatch_client_payload_ref
+          sha=$dispatch_client_payload_sha
+        elif [ "$event_name" == "pull_request" ]; then
+          branch=$pull_request_ref_name
+          sha=$pull_request_sha
+        else
+          echo "::error::Unsupported event type '$event_name'"
+          exit 1
+        fi
+
+        echo "branch=$branch"
+        echo "branch=$branch" >> $GITHUB_OUTPUT
+
+        echo "sha=$sha"
+        echo "sha=$sha" >> $GITHUB_OUTPUT
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        ref: ${{ steps.source-vars.outputs.branch }}
+
+    # Find PR
+    - uses: 8BitJonny/gh-get-current-pr@2.2.0
+      id: PR
+      with:
+        sha: ${{ steps.source-vars.outputs.sha }}
+
+    - id: check-pr
+      shell: bash
+      run: |
+        if [ -z "${{ steps.PR.outputs.number }}" ]; then
+          echo "pr_found=false" >> $GITHUB_OUTPUT
+          echo "has_prerelease_label=false" >> $GITHUB_OUTPUT
+        else
+          echo "pr_found=true" >> $GITHUB_OUTPUT
+          echo "has_prerelease_label=${{ contains(toJSON(fromJSON(steps.PR.outputs.pr).labels.*.name), 'prerelease') }}" >> $GITHUB_OUTPUT
+        fi
+        git branch
+        echo "branch: ${{ steps.source-vars.outputs.branch }}"
+
+    - if: steps.check-pr.outputs.pr_found != 'true'
+      shell: bash
+      run: echo "PR does not exist for branch (${{ steps.source-vars.outputs.branch }}) - ignoring"
+
+    - if: steps.check-pr.outputs.has_prerelease_label == 'true'
+      shell: bash
+      run: |
+        echo "Your PR number is ${{ steps.PR.outputs.number }}"
+        echo "::debug::labels.contains('prerelease'): ${{ contains(toJSON(fromJSON(steps.PR.outputs.pr).labels.*.name), 'prerelease') }}"
+
+    # Compute next release
+    - uses: open-turo/action-setup-tools@v1
+      if: steps.check-pr.outputs.has_prerelease_label == 'true'
+
+    - name: Build
+      if: steps.check-pr.outputs.has_prerelease_label == 'true'
+      uses: open-turo/actions-node/build@v5
+      with:
+        checkout-repo: false
+
+    - name: Prerelease
+      id: prerelease
+      uses: open-turo/actions-release/semantic-release@v4
+      if: steps.check-pr.outputs.has_prerelease_label == 'true'
+      with:
+        branches: '["main", {"name": "${{ steps.source-vars.outputs.branch }}","channel": "next","prerelease": "pr-${{ steps.PR.outputs.number }}.${{ github.run_number }}.${{ github.run_attempt }}"}]'
+        dry-run: ${{ inputs.create-prerelease == 'false' }}
+        extra-plugins: ${{ inputs.extra-plugins }}
+        github-token: ${{ inputs.github-token }}
+        override-github-ref-name: ${{ steps.source-vars.outputs.branch }}
+        override-github-sha: ${{ steps.source-vars.outputs.sha }}
+      env:
+        GITHUB_TOKEN: ${{ inputs.github-token }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+    - id: vars
+      if: steps.check-pr.outputs.has_prerelease_label == 'true'
+      shell: bash
+      run: |
+        echo "version=${{ steps.prerelease.outputs.new-release-version }}" >> $GITHUB_OUTPUT
+        echo "run-url=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$GITHUB_OUTPUT"
+
+    - uses: open-turo/actions-node/build-docker@v5
+      if: steps.prerelease.outputs.new-release-published == 'true' && inputs.dockerhub-user != '' && inputs.dockerhub-password != ''
+      id: build-docker
+      with:
+        dockerhub-user: ${{ inputs.dockerhub-user }}
+        dockerhub-password: ${{ inputs.dockerhub-password }}
+        github-token: ${{ inputs.github-token }}
+        artifactory-username: ${{ inputs.artifactory-username }}
+        artifactory-auth-token: ${{ inputs.artifactory-auth-token }}
+        npm-auth-token: ${{ inputs.npm-auth-token }}
+        npm-token: ${{ inputs.npm-token }}
+        image-version: ${{ steps.vars.outputs.version }}
+        docker-metadata-tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}},value=${{ steps.vars.outputs.version }}
+
+    - name: Add new version to summary
+      shell: bash
+      if: steps.prerelease.outputs.new-release-published == 'true'
+      env:
+        NEW_VERSION: ${{ steps.vars.outputs.version }}
+        DOCKER_IMAGE: ${{ steps.build-docker.outputs.image-with-tag }}
+      run: |
+        echo "::notice::new version: \`${NEW_VERSION}\`"
+        echo "#### New version: \`${NEW_VERSION}\`" >> $GITHUB_STEP_SUMMARY
+        echo "#### Docker image: \`${DOCKER_IMAGE}\`" >> $GITHUB_STEP_SUMMARY
+
+    - name: Add no new version to summary
+      shell: bash
+      if: steps.prerelease.outputs.new-release-published != 'true'
+      run: |
+        echo "::notice::no new version"
+        echo "### New version: 'NONE" >> $GITHUB_STEP_SUMMARY
+
+    - name: Check for release notes comment
+      uses: peter-evans/find-comment@v2
+      id: fc-prerelease
+      if: steps.prerelease.outputs.new-release-published == 'true'
+      with:
+        issue-number: ${{ steps.PR.outputs.number }}
+        comment-author: "github-actions[bot]"
+        body-includes: "<!-- prerelease comment -->"
+    - name: Delete previous release note
+      if: steps.fc-prerelease.outputs.comment-id != ''
+      uses: jungwinter/comment@v1
+      with:
+        type: delete
+        comment_id: ${{ steps.fc-prerelease.outputs.comment-id }}
+        token: ${{ inputs.github-token }}
+
+    - name: Upsert build version
+      if: steps.prerelease.outputs.new-release-published == 'true'
+      uses: peter-evans/create-or-update-comment@v1
+      with:
+        issue-number: ${{ steps.PR.outputs.number }}
+        body: |
+          <!-- prerelease comment -->
+          ## Prerelease build
+
+          **Build version:** `${{ steps.vars.outputs.version }}`
+          **Docker image:** `${{ steps.build-docker.outputs.image-with-tag }}`
+
+          [Build output](${{ steps.vars.outputs.run-url }})
