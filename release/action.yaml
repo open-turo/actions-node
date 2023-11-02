@@ -96,7 +96,7 @@ runs:
         NPM_TOKEN: ${{ inputs.npm-token }}
     - uses: open-turo/actions-node/build-docker@v5
       id: docker-build
-      if: dockerhub-user != '' && dockerhub-password != ''
+      if: inputs.dockerhub-user != '' && inputs.dockerhub-password != ''
       with:
         docker-config-file: ${{ inputs.docker-config-file }}
         dockerhub-user: ${{ inputs.dockerhub-user }}
