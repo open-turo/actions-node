@@ -150,6 +150,8 @@ runs:
       uses: open-turo/actions-node/build@v5
       with:
         checkout-repo: false
+        npm-auth-token: ${{ inputs.npm-auth-token }}
+        npm-token: ${{ inputs.npm-token }}
 
     - name: Prerelease
       id: prerelease
