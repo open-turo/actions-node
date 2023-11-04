@@ -158,12 +158,11 @@ runs:
       uses: open-turo/actions-release/semantic-release@v4
       if: steps.check-pr.outputs.has_prerelease_label == 'true'
       with:
-        branches: '["main", {"name": "${{ steps.source-vars.outputs.branch }}","channel": "next","prerelease": "pr-${{ steps.PR.outputs.number }}.${{ github.run_number }}.${{ github.run_attempt }}"}]'
+        branches: '["${{ github.event.repository.default_branch }}", {"name": "${{ steps.source-vars.outputs.branch }}","channel": "next","prerelease": "pr-${{ steps.PR.outputs.number }}.${{ github.run_number }}.${{ github.run_attempt }}"}]'
         dry-run: ${{ inputs.create-prerelease == 'false' }}
         extra-plugins: ${{ inputs.extra-plugins }}
         github-token: ${{ inputs.github-token }}
         override-github-ref-name: ${{ steps.source-vars.outputs.branch }}
-        override-github-sha: ${{ steps.source-vars.outputs.sha }}
       env:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
