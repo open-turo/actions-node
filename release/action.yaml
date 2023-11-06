@@ -89,10 +89,24 @@ runs:
         checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
+    - uses: 8BitJonny/gh-get-current-pr@2.2.0
+      id: PR
+      with:
+        sha: ${{ steps.source-vars.outputs.sha }}
+    - name: Branches configuration
+      id: branches-configuration
+      shell: bash
+      run: |
+        if [ -z "${{ steps.PR.outputs.number }}" ]; then
+          echo "branches=${{ github.event.repository.default_branch }}" >> $GITHUB_OUTPUT
+        else
+          echo "branches=[\"${{ github.event.repository.default_branch }}\", {\"name\": \"${{ github.ref_name }}\",\"channel\": \"next\",\"prerelease\": \"pr-${{ steps.PR.outputs.number }}.${{ github.run_number }}.${{ github.run_attempt }}\"}]" >> $GITHUB_OUTPUT
+        fi
     - name: Release
       id: release
       uses: open-turo/actions-release/semantic-release@v4
       with:
+        branches: ${{ steps.branches-configuration.outputs.branches }}
         dry-run: ${{ inputs.dry-run }}
         extra-plugins: ${{ inputs.extra-plugins }}
         github-token: ${{ inputs.github-token }}
