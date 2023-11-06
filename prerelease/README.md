@@ -40,6 +40,7 @@ required permission to operate on protected branches.
 | parameter | description | required | default |
 | --- | --- | --- | --- |
 | checkout-repo | Perform checkout as first step of action | `false` | true |
+| checkout-fetch-depth | The number of commits to fetch. 0 indicates all history for all branches and tags | `false` | 0 |
 | create-prerelease | Whether semantic-release should create a prerelease or do a dry run. This can be useful to set to true when a prerelease requires pushing artifacts semantic-release is in charge of generating | `false` | false |
 | github-token | GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN' | `true` | ${{ github.token }} |
 | docker-config-file | Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile. | `false` | .docker-config.json |

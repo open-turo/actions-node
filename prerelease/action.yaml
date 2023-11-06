@@ -9,6 +9,10 @@ inputs:
     required: false
     description: Perform checkout as first step of action
     default: "true"
+  checkout-fetch-depth:
+    required: false
+    description: The number of commits to fetch. 0 indicates all history for all branches and tags
+    default: "0"
   create-prerelease:
     required: false
     description: Whether semantic-release should create a prerelease or do a dry run. This can be useful to set to true when a prerelease requires pushing artifacts semantic-release is in charge of generating
@@ -109,7 +113,7 @@ runs:
 
     - uses: actions/checkout@v4
       with:
-        fetch-depth: 0
+        fetch-depth: ${{ inputs.checkout-fetch-depth }}
         ref: ${{ steps.source-vars.outputs.branch }}
 
     # Find PR
