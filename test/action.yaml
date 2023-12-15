@@ -56,7 +56,7 @@ runs:
     - name: Run tests (npm)
       if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
-      run: npm run test ${{ inputs.test-flags }}
+      run: npm run test -- ${{ inputs.test-flags }}
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
