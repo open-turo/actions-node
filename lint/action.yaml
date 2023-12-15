@@ -94,4 +94,4 @@ runs:
       uses: open-turo/actions-release/lint-release-notes@v4
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }
+        NPM_TOKEN: ${{ inputs.npm-token }}
