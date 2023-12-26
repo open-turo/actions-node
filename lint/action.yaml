@@ -68,7 +68,7 @@ runs:
       id: check_pre_commit_config
       uses: andstor/file-existence-action@v2
       with:
-        files: ".pre-commit-config.yaml, .pre-commit-config.yml"
+        files: .pre-commit-config.*
     - name: Pre-commit
       if: steps.check_pre_commit_config.outputs.files_exists == 'true'
       uses: open-turo/action-pre-commit@v1
