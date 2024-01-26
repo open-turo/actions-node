@@ -214,7 +214,7 @@ runs:
         echo "### New version: 'NONE" >> $GITHUB_STEP_SUMMARY
 
     - name: Check for release notes comment
-      uses: peter-evans/find-comment@v2
+      uses: peter-evans/find-comment@v3
       id: fc-prerelease
       if: steps.prerelease.outputs.new-release-published == 'true'
       with:
