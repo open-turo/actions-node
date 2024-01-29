@@ -32,7 +32,7 @@ runs:
       uses: open-turo/action-setup-tools@v1
     - name: Check for yarn.lock
       id: check_yarn_lock
-      uses: andstor/file-existence-action@v2
+      uses: andstor/file-existence-action@v3
       with:
         files: yarn.lock
     - name: Install dependencies (yarn)
