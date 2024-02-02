@@ -89,7 +89,7 @@ runs:
         checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
-    - uses: 8BitJonny/gh-get-current-pr@2.2.0
+    - uses: 8BitJonny/gh-get-current-pr@3.0.0
       id: PR
       with:
         sha: ${{ github.event.pull_request.head.sha }}
