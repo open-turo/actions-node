@@ -33,37 +33,6 @@ runs:
         fetch-depth: 0
     - name: Setup tools
       uses: open-turo/action-setup-tools@v1
-    - name: Check for yarn.lock
-      id: check_yarn_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: yarn.lock
-    - name: Install dependencies (yarn)
-      if: steps.check_yarn_lock.outputs.files_exists == 'true'
-      shell: bash
-      run: yarn --pure-lockfile
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-    - name: Install dependencies (npm)
-      if: steps.check_yarn_lock.outputs.files_exists == 'false'
-      shell: bash
-      run: npm ci
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-    - name: Run lint script (npm)
-      if: steps.check_yarn_lock.outputs.files_exists == 'false'
-      shell: bash
-      run: npm run ${{ inputs.lint-script }}
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
-    - name: Run lint script (yarn)
-      if: steps.check_yarn_lock.outputs.files_exists == 'true'
-      shell: bash
-      run: yarn ${{ inputs.lint-script }}
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Check for .pre-commit-config file
       id: check_pre_commit_config
       uses: andstor/file-existence-action@v3
