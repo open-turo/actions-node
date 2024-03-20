@@ -5,7 +5,7 @@
 ## Description
 
 GitHub Action that lints a Node based repository
-<!-- action-docs-description -->
+<!-- action-docs-description source="action.yaml" -->
 <!-- prettier-ignore-end -->
 
 ## Usage
@@ -39,23 +39,22 @@ This action runs the following lint checks:
 <!-- action-docs-inputs source="action.yaml" -->
 ## Inputs
 
-| parameter | description | required | default |
+| name | description | required | default |
 | --- | --- | --- | --- |
-| checkout-repo | Perform checkout as first step of action | `false` | true |
-| lint-script | Custom script to run, should be defined in package.json. | `false` | lint |
-| github-token | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true` | ${{ github.token }} |
-| npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false` |  |
-| npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
-| internal-dependency-prefixes | Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'. | `false` |  |
-<!-- action-docs-inputs -->
+| `checkout-repo` | <p>Perform checkout as first step of action</p> | `false` | `true` |
+| `lint-script` | <p>Custom script to run, should be defined in package.json.</p> | `false` | `lint` |
+| `github-token` | <p>GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |
+| `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
+| `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
+| `internal-dependency-prefixes` | <p>Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'.</p> | `false` | `""` |
+<!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
 
-<!-- action-docs-outputs -->
+<!-- action-docs-outputs source="action.yaml" -->
 <!-- action-docs-runs source="action.yaml" -->
 ## Runs
 
 This action is a `composite` action.
-<!-- action-docs-runs -->
+<!-- action-docs-runs source="action.yaml" -->
 <!-- action-docs-usage source="action.yaml"  -->
-<!-- action-docs-usage -->
 <!-- prettier-ignore-end -->

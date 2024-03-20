@@ -1,13 +1,12 @@
 # GitHub Action Build
 
-<!-- prettier-ignore-start source="action.yaml"  -->
+<!-- prettier-ignore-start   -->
 <!-- action-docs-description -->
 
 ## Description
 
 GitHub Action that builds Node based repository
 
-<!-- action-docs-description -->
 <!-- prettier-ignore-end -->
 
 ## Usage
@@ -48,15 +47,46 @@ This action runs the following lint checks:
 | github-token | GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN' | `true` | ${{ github.token }} |
 | npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false` |  |
 | npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
-<!-- action-docs-inputs -->
 <!-- action-docs-outputs source="action.yaml"  -->
-
-<!-- action-docs-outputs -->
 <!-- action-docs-runs source="action.yaml"  -->
 ## Runs
 
 This action is a `composite` action.
-<!-- action-docs-runs -->
 <!-- action-docs-usage source="action.yaml" -->
-<!-- action-docs-usage -->
+## Usage
+
+```yaml
+- uses: @
+  with:
+    checkout-repo:
+    # Perform checkout as first step of action
+    #
+    # Required: false
+    # Default: true
+
+    build-script:
+    # Custom script to run, should be defined in package.json.
+    #
+    # Required: false
+    # Default: build
+
+    github-token:
+    # GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
+    #
+    # Required: true
+    # Default: ${{ github.token }}
+
+    npm-auth-token:
+    # The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+    #
+    # Required: false
+    # Default: ""
+
+    npm-token:
+    # The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+    #
+    # Required: false
+    # Default: ""
+```
+<!-- action-docs-usage source="action.yaml" -->
 <!-- prettier-ignore-end -->
