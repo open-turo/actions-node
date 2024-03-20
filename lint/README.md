@@ -1,7 +1,7 @@
 # GitHub Action Lint
 
 <!-- prettier-ignore-start -->
-<!-- action-docs-description -->
+<!-- action-docs-description source="action.yaml" -->
 ## Description
 
 GitHub Action that lints a Node based repository
@@ -36,7 +36,7 @@ This action runs the following lint checks:
 - This expects that `.commitlintrc.yaml` will be present to enforce [`conventional-commit`](https://github.com/wagoid/commitlint-github-action).
 
 <!-- prettier-ignore-start -->
-<!-- action-docs-inputs -->
+<!-- action-docs-inputs source="action.yaml" -->
 ## Inputs
 
 | parameter | description | required | default |
@@ -48,14 +48,14 @@ This action runs the following lint checks:
 | npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
 | internal-dependency-prefixes | Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'. | `false` |  |
 <!-- action-docs-inputs -->
-<!-- action-docs-outputs -->
+<!-- action-docs-outputs source="action.yaml" -->
 
 <!-- action-docs-outputs -->
-<!-- action-docs-runs -->
+<!-- action-docs-runs source="action.yaml" -->
 ## Runs
 
 This action is a `composite` action.
 <!-- action-docs-runs -->
-<!-- action-docs-usage  -->
+<!-- action-docs-usage source="action.yaml"  -->
 <!-- action-docs-usage -->
 <!-- prettier-ignore-end -->

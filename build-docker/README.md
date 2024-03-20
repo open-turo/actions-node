@@ -1,7 +1,7 @@
 # GitHub Action Build Docker
 
 <!-- prettier-ignore-start -->
-<!-- action-docs-description -->
+<!-- action-docs-description source="action.yaml"  -->
 ## Description
 
 Builds and push docker images for the input platform, tags and image version
@@ -50,36 +50,42 @@ steps:
         type=semver,pattern={{version}},value=${{ steps.release.outputs.new-release-version }}
 ```
 
-<!-- prettier-ignore-start -->
+<!-- prettier-ignore-start source="action.yaml"  -->
 <!-- action-docs-inputs -->
+
 ## Inputs
 
-| parameter | description | required | default |
-| --- | --- | --- | --- |
-| docker-config-file | Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile. | `false` | .docker-config.json |
-| docker-flavor | Docker flavor to use for docker metadata | `false` | latest=false  |
-| dockerhub-user | username for dockerhub | `true` |  |
-| dockerhub-password | password for dockerhub | `true` |  |
-| github-token | Usually secrets.GITHUB_TOKEN | `true` |  |
-| npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. Gets pass to the docker build as a secret | `false` |  |
-| npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. Gets passed to the docker build as a secret | `false` |  |
-| image-version | Docker image version | `true` |  |
-| image-platform | Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc) | `false` | linux/amd64 |
-| docker-metadata-tags | 'List of tags as key-value pair attributes' See: https://github.com/docker/metadata-action#tags-input | `false` |  |
+| parameter            | description                                                                                                                                                                                    | required | default             |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------------------- |
+| docker-config-file   | Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.                                                                               | `false`  | .docker-config.json |
+| docker-flavor        | Docker flavor to use for docker metadata                                                                                                                                                       | `false`  | latest=false        |
+| dockerhub-user       | username for dockerhub                                                                                                                                                                         | `true`   |                     |
+| dockerhub-password   | password for dockerhub                                                                                                                                                                         | `true`   |                     |
+| github-token         | Usually secrets.GITHUB_TOKEN                                                                                                                                                                   | `true`   |                     |
+| npm-auth-token       | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. Gets pass to the docker build as a secret | `false`  |                     |
+| npm-token            | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. Gets passed to the docker build as a secret                                  | `false`  |                     |
+| image-version        | Docker image version                                                                                                                                                                           | `true`   |                     |
+| image-platform       | Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)                                                                                                               | `false`  | linux/amd64         |
+| docker-metadata-tags | 'List of tags as key-value pair attributes' See: https://github.com/docker/metadata-action#tags-input                                                                                          | `false`  |                     |
+
 <!-- action-docs-inputs -->
-<!-- action-docs-outputs -->
+<!-- action-docs-outputs source="action.yaml"  -->
+
 ## Outputs
 
-| parameter | description |
-| --- | --- |
-| image-name | Docker image name |
+| parameter      | description                                        |
+| -------------- | -------------------------------------------------- |
+| image-name     | Docker image name                                  |
 | image-with-tag | Full image with tag - <image-name>:<image-version> |
+
 <!-- action-docs-outputs -->
-<!-- action-docs-runs -->
+<!-- action-docs-runs source="action.yaml"  -->
+
 ## Runs
 
 This action is a `composite` action.
+
 <!-- action-docs-runs -->
-<!-- action-docs-usage  -->
+<!-- action-docs-usage source="action.yaml"   -->
 <!-- action-docs-usage -->
 <!-- prettier-ignore-end -->
