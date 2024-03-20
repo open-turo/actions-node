@@ -26,7 +26,7 @@ runs:
       uses: actions/checkout@v3
       if: inputs.checkout-repo == 'true'
     - name: Setup tools
-      uses: open-turo/action-setup-tools@v1
+      uses: open-turo/action-setup-tools@v2
     - name: Check for yarn.lock
       id: check_yarn_lock
       uses: andstor/file-existence-action@v2
