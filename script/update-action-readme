@@ -8,7 +8,9 @@ for i in $*; do
     echo "skipping: ${i}"
     continue
   fi
-  readme_file=$(dirname "$i")/README.md
-  echo "npx action-docs --no-banner -a "${i}" --update-readme "${readme_file}""
-  npx action-docs --no-banner -a "${i}" --update-readme "${readme_file}"
+
+  echo "npx action-docs --no-banner -s "${i}""
+  cd $(dirname "$i")
+  npx action-docs@2 --no-banner -s action.yaml -u README.md || echo "action-docs failed for $i"
+  cd -
 done

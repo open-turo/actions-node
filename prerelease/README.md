@@ -1,7 +1,7 @@
 # GitHub Action: Prerelease
 
 <!-- prettier-ignore-start -->
-<!-- action-docs-description -->
+<!-- action-docs-description source="action.yaml" -->
 ## Description
 
 < GitHub Action to compute a prerelease version based on the latest release version and the number of commits since the latest release. Meant to only be run in the context of a pull request. This will also generate a docker tag based on the computed version if the label `prerelease` is specified on the PR and docker credentials are present
@@ -34,7 +34,7 @@ of `actions/checkout@v4` by setting the parameter `persist-credentials: false`. 
 required permission to operate on protected branches.
 
 <!-- prettier-ignore-start -->
-<!-- action-docs-inputs -->
+<!-- action-docs-inputs source="action.yaml" -->
 ## Inputs
 
 | parameter | description | required | default |
@@ -51,7 +51,7 @@ required permission to operate on protected branches.
 | extra-plugins | Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config. | `false` | @open-turo/semantic-release-config  |
 <!-- action-docs-inputs -->
 
-<!-- action-docs-outputs -->
+<!-- action-docs-outputs source="action.yaml" -->
 ## Outputs
 
 | parameter | description |
@@ -65,12 +65,12 @@ required permission to operate on protected branches.
 | run-url | URL to the GHA run |
 <!-- action-docs-outputs -->
 
-<!-- action-docs-runs -->
+<!-- action-docs-runs source="action.yaml" -->
 ## Runs
 
 This action is a `composite` action.
 <!-- action-docs-runs -->
 
-<!-- action-docs-usage  -->
+<!-- action-docs-usage source="action.yaml"  -->
 <!-- action-docs-usage -->
 <!-- prettier-ignore-end -->
