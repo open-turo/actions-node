@@ -146,7 +146,7 @@ runs:
         echo "::debug::labels.contains('prerelease'): ${{ contains(toJSON(fromJSON(steps.PR.outputs.pr).labels.*.name), 'prerelease') }}"
 
     # Compute next release
-    - uses: open-turo/action-setup-tools@v1
+    - uses: open-turo/action-setup-tools@v2
       if: steps.check-pr.outputs.has_prerelease_label == 'true'
 
     - name: Build
