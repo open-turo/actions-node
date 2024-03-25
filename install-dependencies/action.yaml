@@ -1,0 +1,88 @@
+name: Install Dependencies
+description: GitHub Action that installs dependencies in a Node based repository
+inputs:
+  checkout-repo:
+    required: false
+    description: Perform checkout as first step of action
+    default: "true"
+  github-token:
+    required: true
+    description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
+    default: ${{ github.token }}
+  npm-auth-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  s3-bucket-name:
+    required: false
+    description: S3 bucket name to cache node_modules to speed up dependency installation.
+  s3-bucket-region:
+    required: false
+    description: S3 bucket region to cache node_modules to speed up dependency installation.
+outputs:
+  cache-hit:
+    description: Whether the cache was hit when installing dependencies
+    value: ${{ steps.read_cache.outputs.cache-hit }}
+  package-manager:
+    description: The package manager used to install dependencies
+    value: ${{ steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn' || 'npm' }}
+runs:
+  using: composite
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      if: inputs.checkout-repo == 'true'
+      with:
+        fetch-depth: 0
+    - name: Setup tools
+      uses: open-turo/action-setup-tools@v2
+    - name: Check for yarn.lock
+      id: check_yarn_lock
+      uses: andstor/file-existence-action@v3
+      with:
+        files: yarn.lock
+    - name: Compute lockfile hash
+      if: inputs.s3-bucket-name != ''
+      id: lockfile_hash
+      run: echo "hash=${{ steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || hashFiles('**/package-lock.json') }}" >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Load cached node_modules if available
+      if: inputs.s3-bucket-name != ''
+      uses: everpcpc/actions-cache@v1
+      id: read_cache
+      with:
+        bucket: ${{ inputs.s3-bucket-name }}
+        use-fallback: false
+        path: node_modules
+        key: ${{ env.cache-name }}-${{ steps.lockfile_hash.outputs.hash }}
+        restore-keys: ${{ env.cache-name }}-
+      env:
+        AWS_REGION: ${{ inputs.s3-bucket-region }}
+        cache-name: ${{ github.event.repository.name }}/cache-node-modules
+    - name: Install dependencies (yarn)
+      if: steps.check_yarn_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: yarn --frozen-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Install dependencies (npm)
+      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      shell: bash
+      run: npm ci
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Cache node_modules
+      if: inputs.s3-bucket-name != '' &&  steps.read_cache.outputs.cache-hit != 'true'
+      uses: everpcpc/actions-cache@v1
+      id: write_cache
+      with:
+        bucket: ${{ inputs.s3-bucket-name }}
+        use-fallback: false
+        path: node_modules
+        key: ${{ env.cache-name }}-${{ steps.lockfile_hash.outputs.hash }}
+        restore-keys: ${{ env.cache-name }}-
+      env:
+        AWS_REGION: ${{ inputs.s3-bucket-region }}
+        cache-name: ${{ github.event.repository.name }}/cache-node-modules
