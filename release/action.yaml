@@ -43,6 +43,12 @@ inputs:
     description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.
     default: |
       @open-turo/semantic-release-config
+  s3-bucket-name:
+    required: false
+    description: S3 bucket name to cache node_modules to speed up dependency installation.
+  s3-bucket-region:
+    required: false
+    description: S3 bucket region to cache node_modules to speed up dependency installation.
 outputs:
   new-release-published:
     description: Whether a new release was published
@@ -56,39 +62,13 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Checkout
-      uses: actions/checkout@v4
-      if: inputs.checkout-repo == 'true'
-      with:
-        fetch-depth: ${{ inputs.checkout-fetch-depth }}
-        persist-credentials: false
-    - name: Setup tools
-      uses: open-turo/action-setup-tools@v2
-    - name: Check for yarn.lock
-      id: check_yarn_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: yarn.lock
-    - name: Install dependencies (yarn)
-      if: steps.check_yarn_lock.outputs.files_exists == 'true'
-      shell: bash
-      run: yarn --pure-lockfile
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
-    - name: Install dependencies (npm)
-      if: steps.check_yarn_lock.outputs.files_exists == 'false'
-      shell: bash
-      run: npm ci
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
     - name: Build
       uses: open-turo/actions-node/build@v5
       with:
-        checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
+        s3-bucket-name: ${{ inputs.s3-bucket-name }}
+        s3-bucket-region: ${{ inputs.s3-bucket-region }}
     - uses: 8BitJonny/gh-get-current-pr@3.0.0
       id: PR
       with:

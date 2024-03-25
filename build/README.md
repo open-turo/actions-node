@@ -15,11 +15,28 @@ GitHub Action that builds Node based repository
 jobs:
   build:
     steps:
-      - name: Lint
-        uses: open-turo/actions-node/lint@v4
+      - name: Build
+        uses: open-turo/actions-node/build@v5
         with:
           ## example value for github-token provided below
           github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+You can specify an S3 bucket to cache node_modules in order to speed up dependency installation, in which case you will need to configure AWS credentials like so:
+
+```yaml
+jobs:
+  build:
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+          with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: open-turo/actions-node/build@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          s3-bucket-name: <bucket-name>
+          s3-bucket-region: <bucket-region>
 ```
 
 ## Lint Checks
@@ -84,6 +101,18 @@ This action is a `composite` action.
 
     npm-token:
     # The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+    #
+    # Required: false
+    # Default: ""
+
+    s3-bucket-name:
+    # S3 bucket name to cache node_modules to speed up dependency installation.
+    #
+    # Required: false
+    # Default: ""
+
+    s3-bucket-region:
+    # S3 bucket region to cache node_modules to speed up dependency installation.
     #
     # Required: false
     # Default: ""
