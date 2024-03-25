@@ -21,6 +21,23 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 ```
 
+You can specify an S3 bucket to cache node_modules in order to speed up dependency installation, in which case you will need to configure AWS credentials like so:
+
+```yaml
+jobs:
+  build:
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+          with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: open-turo/actions-node/test@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          s3-bucket-name: <bucket-name>
+          s3-bucket-region: <bucket-region>
+```
+
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.

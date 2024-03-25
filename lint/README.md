@@ -15,10 +15,27 @@ jobs:
   build:
     steps:
       - name: Lint
-        uses: open-turo/actions-node/lint@v4
+        uses: open-turo/actions-node/lint@v5
         with:
           ## example value for github-token provided below
           github-token: ${{ secrets.GITHUB_TOKEN }}
+```
+
+You can specify an S3 bucket to cache node_modules in order to speed up dependency installation, in which case you will need to configure AWS credentials like so:
+
+```yaml
+jobs:
+  build:
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+          with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: open-turo/actions-node/lint@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          s3-bucket-name: <bucket-name>
+          s3-bucket-region: us-east-1
 ```
 
 ## Lint Checks
@@ -47,6 +64,8 @@ This action runs the following lint checks:
 | `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
 | `internal-dependency-prefixes` | <p>Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'.</p> | `false` | `""` |
+| `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
+| `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 <!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
 

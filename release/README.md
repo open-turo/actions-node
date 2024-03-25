@@ -29,6 +29,23 @@ steps:
       npm-auth-token: ${{ secrets.NPM_AUTH_TOKEN }}
 ```
 
+You can specify an S3 bucket to cache node_modules in order to speed up dependency installation, in which case you will need to configure AWS credentials like so:
+
+```yaml
+jobs:
+  build:
+    steps:
+      - uses: aws-actions/configure-aws-credentials@v4
+          with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      - uses: open-turo/actions-node/release@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          s3-bucket-name: <bucket-name>
+          s3-bucket-region: <bucket-region>
+```
+
 **IMPORTANT**: `GITHUB_TOKEN` does not have the required permissions to operate on protected branches.
 If you are using this action for protected branches, replace `GITHUB_TOKEN` with [Personal Access Token](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line). If using the `@semantic-release/git` plugin for protected branches, avoid persisting credentials as part of `actions/checkout@v3` by setting the parameter `persist-credentials: false`. This credential does not have the required permission to operate on protected branches.
 
@@ -49,6 +66,8 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
 | `dry-run` | <p>Whether to run semantic release in <code>dry-run</code> mode. It will override the <code>dryRun</code> attribute in your configuration file</p> | `false` | `false` |
 | `extra-plugins` | <p>Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.</p> | `false` | `@open-turo/semantic-release-config ` |
+| `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
+| `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 <!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
 ## Outputs
