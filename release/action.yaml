@@ -63,7 +63,7 @@ runs:
   using: composite
   steps:
     - name: Build
-      uses: open-turo/actions-node/build@v5
+      uses: open-turo/actions-node/build@v6
       with:
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
