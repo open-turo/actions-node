@@ -36,6 +36,7 @@ runs:
       if: inputs.checkout-repo == 'true'
       with:
         fetch-depth: 0
+        persist-credentials: false
     - name: Setup tools
       uses: open-turo/action-setup-tools@v2
     - name: Check for yarn.lock
