@@ -35,7 +35,7 @@ runs:
   steps:
     - name: Install dependencies
       id: install_dependencies
-      uses: open-turo/actions-node/install-dependencies@v5
+      uses: open-turo/actions-node/install-dependencies@v6
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         github-token: ${{ inputs.github-token }}
