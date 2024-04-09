@@ -62,9 +62,16 @@ outputs:
 runs:
   using: composite
   steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      if: inputs.checkout-repo == 'true'
+      with:
+        fetch-depth: ${{ inputs.checkout-fetch-depth }}
+        persist-credentials: false
     - name: Build
       uses: open-turo/actions-node/build@v6
       with:
+        checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
