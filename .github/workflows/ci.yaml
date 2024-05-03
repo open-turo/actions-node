@@ -13,6 +13,7 @@ jobs:
       - uses: open-turo/actions-gha/lint@v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+          node-version: "20"
 
   test:
     name: Test
