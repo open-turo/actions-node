@@ -64,7 +64,7 @@ runs:
         files: .pre-commit-config.*
     - name: Pre-commit
       if: steps.check_pre_commit_config.outputs.files_exists == 'true'
-      uses: open-turo/action-pre-commit@v2
+      uses: open-turo/action-pre-commit@v3
     - if: ${{ inputs.internal-dependency-prefixes != '' }}
       name: Create Beta Release Check Script
       run: |
