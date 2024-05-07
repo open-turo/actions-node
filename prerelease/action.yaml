@@ -223,7 +223,7 @@ runs:
         body-includes: "<!-- prerelease comment -->"
     - name: Delete previous release note
       if: steps.fc-prerelease.outputs.comment-id != ''
-      uses: jungwinter/comment@v1
+      uses: winterjung/comment@v1
       with:
         type: delete
         comment_id: ${{ steps.fc-prerelease.outputs.comment-id }}
