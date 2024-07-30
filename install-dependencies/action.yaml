@@ -51,7 +51,7 @@ runs:
       shell: bash
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
-      uses: everpcpc/actions-cache@v1
+      uses: everpcpc/actions-cache@v2
       id: read_cache
       with:
         bucket: ${{ inputs.s3-bucket-name }}
@@ -76,7 +76,7 @@ runs:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Cache node_modules
       if: inputs.s3-bucket-name != '' &&  steps.read_cache.outputs.cache-hit != 'true'
-      uses: everpcpc/actions-cache@v1
+      uses: everpcpc/actions-cache@v2
       id: write_cache
       with:
         bucket: ${{ inputs.s3-bucket-name }}
