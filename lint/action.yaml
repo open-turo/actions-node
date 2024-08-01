@@ -65,6 +65,9 @@ runs:
     - name: Pre-commit
       if: steps.check_pre_commit_config.outputs.files_exists == 'true'
       uses: open-turo/action-pre-commit@v3
+      with:
+        s3-bucket-name: ${{ inputs.s3-bucket-name }}
+        s3-bucket-region: ${{ inputs.s3-bucket-region }}
     - if: ${{ inputs.internal-dependency-prefixes != '' }}
       name: Create Beta Release Check Script
       run: |
