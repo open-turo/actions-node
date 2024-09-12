@@ -159,7 +159,7 @@ runs:
 
     - name: Prerelease
       id: prerelease
-      uses: open-turo/actions-release/semantic-release@v5
+      uses: open-turo/actions-release/semantic-release@v6
       if: steps.check-pr.outputs.has_prerelease_label == 'true'
       with:
         branches: '["${{ github.event.repository.default_branch }}", {"name": "${{ steps.source-vars.outputs.branch }}","channel": "next","prerelease": "pr-${{ steps.PR.outputs.number }}.${{ github.run_number }}.${{ github.run_attempt }}"}]'

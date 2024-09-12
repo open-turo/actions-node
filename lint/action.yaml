@@ -87,7 +87,7 @@ runs:
       shell: bash
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
-      uses: open-turo/actions-release/lint-release-notes@v5
+      uses: open-turo/actions-release/lint-release-notes@v6
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}

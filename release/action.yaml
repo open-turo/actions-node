@@ -91,7 +91,7 @@ runs:
         fi
     - name: Release
       id: release
-      uses: open-turo/actions-release/semantic-release@v5
+      uses: open-turo/actions-release/semantic-release@v6
       with:
         branches: ${{ steps.branches-configuration.outputs.branches }}
         dry-run: ${{ inputs.dry-run }}
