@@ -45,7 +45,7 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
-    - name: Run lint script (yarn)
+    - name: Run build script (yarn)
       if: steps.install_dependencies.outputs.package-manager == 'yarn'
       shell: bash
       run: yarn ${{ inputs.build-script }}
