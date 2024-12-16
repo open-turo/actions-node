@@ -30,7 +30,7 @@ runs:
   steps:
     - name: Install dependencies
       id: install_dependencies
-      uses: open-turo/actions-node/install-dependencies@v6
+      uses: open-turo/actions-node/install-dependencies@s/replace_node_install
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         github-token: ${{ inputs.github-token }}
