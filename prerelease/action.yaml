@@ -151,7 +151,7 @@ runs:
 
     - name: Build
       if: steps.check-pr.outputs.has_prerelease_label == 'true'
-      uses: open-turo/actions-node/build@v5
+      uses: open-turo/actions-node/build@v6
       with:
         checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
@@ -178,15 +178,13 @@ runs:
         echo "version=${{ steps.prerelease.outputs.new-release-version }}" >> $GITHUB_OUTPUT
         echo "run-url=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$GITHUB_OUTPUT"
 
-    - uses: open-turo/actions-node/build-docker@v5
+    - uses: open-turo/actions-node/build-docker@v6
       if: steps.prerelease.outputs.new-release-published == 'true' && inputs.dockerhub-user != '' && inputs.dockerhub-password != ''
       id: build-docker
       with:
         dockerhub-user: ${{ inputs.dockerhub-user }}
         dockerhub-password: ${{ inputs.dockerhub-password }}
         github-token: ${{ inputs.github-token }}
-        artifactory-username: ${{ inputs.artifactory-username }}
-        artifactory-auth-token: ${{ inputs.artifactory-auth-token }}
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
         image-version: ${{ steps.vars.outputs.version }}
