@@ -56,6 +56,7 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 | name | description | required | default |
 | --- | --- | --- | --- |
 | `checkout-repo` | <p>Perform checkout as first step of action</p> | `false` | `true` |
+| `build-script` | <p>Custom script to run, should be defined in package.json.</p> | `false` | `build` |
 | `checkout-fetch-depth` | <p>The number of commits to fetch. 0 indicates all history for all branches and tags</p> | `false` | `0` |
 | `github-token` | <p>GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |
 | `docker-config-file` | <p>Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.</p> | `false` | `.docker-config.json` |
