@@ -40,6 +40,7 @@ required permission to operate on protected branches.
 | name | description | required | default |
 | --- | --- | --- | --- |
 | `checkout-repo` | <p>Perform checkout as first step of action</p> | `false` | `true` |
+| `build-script` | <p>Custom script to run, should be defined in package.json.</p> | `false` | `build` |
 | `checkout-fetch-depth` | <p>The number of commits to fetch. 0 indicates all history for all branches and tags</p> | `false` | `0` |
 | `create-prerelease` | <p>Whether semantic-release should create a prerelease or do a dry run. This can be useful to set to true when a prerelease requires pushing artifacts semantic-release is in charge of generating</p> | `false` | `false` |
 | `github-token` | <p>GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |

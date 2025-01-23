@@ -5,6 +5,10 @@ inputs:
     required: false
     description: Perform checkout as first step of action
     default: "true"
+  build-script:
+    required: false
+    description: Custom script to run, should be defined in package.json.
+    default: "build"
   checkout-fetch-depth:
     required: false
     description: The number of commits to fetch. 0 indicates all history for all branches and tags
@@ -71,6 +75,7 @@ runs:
     - name: Build
       uses: open-turo/actions-node/build@v6
       with:
+        build-script: ${{ inputs.build-script }}
         checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
