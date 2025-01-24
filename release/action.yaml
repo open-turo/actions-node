@@ -106,7 +106,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
-    - uses: open-turo/actions-node/build-docker@v5
+    - uses: open-turo/actions-node/build-docker@v6
       id: docker-build
       if: inputs.dockerhub-user != '' && inputs.dockerhub-password != '' && steps.release.outputs.new-release-version != ''
       with:
