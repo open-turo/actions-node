@@ -37,7 +37,7 @@ runs:
       with:
         fetch-depth: 0
     - name: Setup tools
-      uses: open-turo/action-setup-tools@v2
+      uses: open-turo/action-setup-tools@v3
     - name: Check for yarn.lock
       id: check_yarn_lock
       uses: andstor/file-existence-action@v3
