@@ -155,7 +155,7 @@ runs:
 
     - name: Build
       if: steps.check-pr.outputs.has_prerelease_label == 'true'
-      uses: open-turo/actions-node/build@v6
+      uses: open-turo/actions-node/build@v7
       with:
         build-script: ${{ inputs.build-script }}
         checkout-repo: false
@@ -183,7 +183,7 @@ runs:
         echo "version=${{ steps.prerelease.outputs.new-release-version }}" >> $GITHUB_OUTPUT
         echo "run-url=https://github.com/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" >> "$GITHUB_OUTPUT"
 
-    - uses: open-turo/actions-node/build-docker@v6
+    - uses: open-turo/actions-node/build-docker@v7
       if: steps.prerelease.outputs.new-release-published == 'true' && inputs.dockerhub-user != '' && inputs.dockerhub-password != ''
       id: build-docker
       with:
