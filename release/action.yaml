@@ -73,7 +73,7 @@ runs:
         fetch-depth: ${{ inputs.checkout-fetch-depth }}
         persist-credentials: false
     - name: Build
-      uses: open-turo/actions-node/build@v6
+      uses: open-turo/actions-node/build@v7
       with:
         build-script: ${{ inputs.build-script }}
         checkout-repo: false
@@ -106,7 +106,7 @@ runs:
         GITHUB_TOKEN: ${{ inputs.github-token }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
-    - uses: open-turo/actions-node/build-docker@v6
+    - uses: open-turo/actions-node/build-docker@v7
       id: docker-build
       if: inputs.dockerhub-user != '' && inputs.dockerhub-password != '' && steps.release.outputs.new-release-version != ''
       with:
