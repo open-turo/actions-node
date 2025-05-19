@@ -216,28 +216,14 @@ runs:
         echo "::notice::no new version"
         echo "### New version: 'NONE" >> $GITHUB_STEP_SUMMARY
 
-    - name: Check for release notes comment
-      uses: peter-evans/find-comment@v3
-      id: fc-prerelease
+    - name: Post status comment
+      uses: open-turo/action-conditional-pr-comment@v1
       if: steps.prerelease.outputs.new-release-published == 'true'
       with:
-        issue-number: ${{ steps.PR.outputs.number }}
-        comment-author: "github-actions[bot]"
-        body-includes: "<!-- prerelease comment -->"
-    - name: Delete previous release note
-      if: steps.fc-prerelease.outputs.comment-id != ''
-      uses: winterjung/comment@v1
-      with:
-        type: delete
-        comment_id: ${{ steps.fc-prerelease.outputs.comment-id }}
-        token: ${{ inputs.github-token }}
-
-    - name: Upsert build version
-      if: steps.prerelease.outputs.new-release-published == 'true'
-      uses: peter-evans/create-or-update-comment@v4
-      with:
-        issue-number: ${{ steps.PR.outputs.number }}
-        body: |
+        workflow: ADD
+        text-detector: "<!-- prerelease comment -->"
+        edit-mode: replace
+        comment: |
           <!-- prerelease comment -->
           ## Prerelease build
 
@@ -245,3 +231,5 @@ runs:
           **Docker image:** `${{ steps.build-docker.outputs.image-with-tag }}`
 
           [Build output](${{ steps.vars.outputs.run-url }})
+        comment-author: "github-actions[bot]"
+        github-token: ${{ secrets.GITHUB_TOKEN }}
