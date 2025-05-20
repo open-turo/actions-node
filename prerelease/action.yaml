@@ -232,4 +232,4 @@ runs:
 
           [Build output](${{ steps.vars.outputs.run-url }})
         comment-author: "github-actions[bot]"
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+        github-token: ${{ inputs.github-token }}
