@@ -221,7 +221,7 @@ runs:
       if: steps.prerelease.outputs.new-release-published == 'true'
       with:
         workflow: ADD
-        text-detector: "<!-- prerelease comment -->"
+        text-detector: "prerelease comment"
         edit-mode: replace
         comment: |
           <!-- prerelease comment -->
