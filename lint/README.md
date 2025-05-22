@@ -60,6 +60,7 @@ This action runs the following lint checks:
 | --- | --- | --- | --- |
 | `checkout-repo` | <p>Perform checkout as first step of action</p> | `false` | `true` |
 | `lint-script` | <p>Custom script to run, should be defined in package.json.</p> | `false` | `lint` |
+| `pre-commit-skip-hooks` | <p>Comma separate list of pre-commit hooks to skip. e.g. 'eslint,prettier'</p> | `false` | `eslint` |
 | `github-token` | <p>GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |
 | `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |

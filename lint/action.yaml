@@ -9,6 +9,10 @@ inputs:
     required: false
     description: Custom script to run, should be defined in package.json.
     default: "lint"
+  pre-commit-skip-hooks:
+    required: false
+    description: Comma separate list of pre-commit hooks to skip. e.g. 'eslint,prettier'
+    default: "eslint"
   github-token:
     required: true
     description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
@@ -65,6 +69,8 @@ runs:
     - name: Pre-commit
       if: steps.check_pre_commit_config.outputs.files_exists == 'true'
       uses: open-turo/action-pre-commit@v3
+      env:
+        SKIP: ${{ inputs.pre-commit-skip-hooks }}
       with:
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
