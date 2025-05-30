@@ -41,6 +41,10 @@ inputs:
   npm-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  image-platform:
+    description: Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)
+    required: false
+    default: linux/amd64
   extra-plugins:
     required: false
     description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.
@@ -193,6 +197,7 @@ runs:
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
         image-version: ${{ steps.vars.outputs.version }}
+        image-platform: "${{ inputs.image-platform }}"
         docker-metadata-tags: |
           type=ref,event=branch
           type=ref,event=pr

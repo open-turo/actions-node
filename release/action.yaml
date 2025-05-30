@@ -38,6 +38,10 @@ inputs:
   npm-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  image-platform:
+    description: Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)
+    required: false
+    default: linux/amd64
   dry-run:
     required: false
     description: Whether to run semantic release in `dry-run` mode. It will override the `dryRun` attribute in your configuration file
@@ -117,6 +121,7 @@ runs:
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
         image-version: ${{ steps.release.outputs.new-release-version }}
+        image-platform: "${{ inputs.image-platform }}"
         docker-flavor: ${{ inputs.docker-flavor }}
         docker-metadata-tags: |
           type=ref,event=branch
