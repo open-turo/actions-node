@@ -44,13 +44,18 @@ required permission to operate on protected branches.
 | `checkout-fetch-depth` | <p>The number of commits to fetch. 0 indicates all history for all branches and tags</p> | `false` | `0` |
 | `create-prerelease` | <p>Whether semantic-release should create a prerelease or do a dry run. This can be useful to set to true when a prerelease requires pushing artifacts semantic-release is in charge of generating</p> | `false` | `false` |
 | `github-token` | <p>GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |
+| `docker-cache` | <p>Whether to use Docker layer caching. Defaults to true.</p> | `false` | `true` |
 | `docker-config-file` | <p>Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.</p> | `false` | `.docker-config.json` |
 | `dockerhub-user` | <p>username for dockerhub</p> | `false` | `""` |
 | `dockerhub-password` | <p>password for dockerhub</p> | `false` | `""` |
+| `image-platform` | <p>Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)</p> | `false` | `""` |
 | `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
 | `image-platform` | <p>Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)</p> | `false` | `linux/amd64` |
 | `extra-plugins` | <p>Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.</p> | `false` | `@open-turo/semantic-release-config ` |
+| `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
+| `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
+| `post-status-comment` | <p>Whether to post a status comment on the PR with the new version and docker image. Defaults to true.</p> | `false` | `true` |
 <!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
 ## Outputs
