@@ -54,6 +54,8 @@ steps:
 | --- | --- | --- | --- |
 | `docker-config-file` | <p>Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.</p> | `false` | `.docker-config.json` |
 | `docker-flavor` | <p>Docker flavor to use for docker metadata</p> | `false` | `latest=false ` |
+| `docker-push` | <p>Whether to push the image to the registry. Defaults to true.</p> | `false` | `true` |
+| `docker-cache` | <p>Whether to use Docker layer caching. Defaults to true.</p> | `false` | `true` |
 | `dockerhub-user` | <p>username for dockerhub</p> | `true` | `""` |
 | `dockerhub-password` | <p>password for dockerhub</p> | `true` | `""` |
 | `github-token` | <p>Usually secrets.GITHUB_TOKEN</p> | `true` | `""` |
