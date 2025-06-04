@@ -50,6 +50,16 @@ inputs:
     description: Extra plugins for pre-install. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.
     default: |
       @open-turo/semantic-release-config
+  s3-bucket-name:
+    required: false
+    description: S3 bucket name to cache node_modules to speed up dependency installation.
+  s3-bucket-region:
+    required: false
+    description: S3 bucket region to cache node_modules to speed up dependency installation.
+  post-status-comment:
+    required: false
+    description: Whether to post a status comment on the PR with the new version and docker image. Defaults to true.
+    default: "true"
 outputs:
   new-release-published:
     description: Whether a new release was published
@@ -165,6 +175,8 @@ runs:
         checkout-repo: false
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
+        s3-bucket-name: ${{ inputs.s3-bucket-name }}
+        s3-bucket-region: ${{ inputs.s3-bucket-region }}
 
     - name: Prerelease
       id: prerelease
@@ -223,7 +235,7 @@ runs:
 
     - name: Post status comment
       uses: open-turo/action-conditional-pr-comment@v1
-      if: steps.prerelease.outputs.new-release-published == 'true'
+      if: steps.prerelease.outputs.new-release-published == 'true' && inputs.post-status-comment == 'true'
       with:
         workflow: ADD
         text-detector: "prerelease comment"
