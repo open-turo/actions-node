@@ -39,9 +39,6 @@ inputs:
   dockerhub-password:
     required: false
     description: password for dockerhub
-  image-platform:
-    description: Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)
-    required: false
   npm-auth-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
