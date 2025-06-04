@@ -64,7 +64,6 @@ If you are using this action for protected branches, replace `GITHUB_TOKEN` with
 | `docker-flavor` | <p>Docker flavor to use for docker metadata</p> | `false` | `latest=false ` |
 | `dockerhub-user` | <p>username for dockerhub</p> | `false` | `""` |
 | `dockerhub-password` | <p>password for dockerhub</p> | `false` | `""` |
-| `image-platform` | <p>Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)</p> | `false` | `""` |
 | `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
 | `image-platform` | <p>Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)</p> | `false` | `linux/amd64` |
