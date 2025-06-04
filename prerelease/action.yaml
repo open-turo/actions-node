@@ -25,6 +25,10 @@ inputs:
     required: true
     description: GitHub token that can checkout the repository as well as create tags/releases against it. e.g. 'secrets.GITHUB_TOKEN'
     default: ${{ github.token }}
+  docker-cache:
+    required: false
+    description: Whether to use Docker layer caching. Defaults to true.
+    default: "true"
   docker-config-file:
     required: false
     description: Path to the docker config file (defaults to .docker-config.json) Must contain imageName, may contain dockerfile.
@@ -35,6 +39,9 @@ inputs:
   dockerhub-password:
     required: false
     description: password for dockerhub
+  image-platform:
+    description: Target platform to build image for (eg. linux/amd64 (default), linux/arm64, etc)
+    required: false
   npm-auth-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
@@ -208,8 +215,9 @@ runs:
         github-token: ${{ inputs.github-token }}
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
+        image-platform: ${{ inputs.image-platform }}
         image-version: ${{ steps.vars.outputs.version }}
-        image-platform: "${{ inputs.image-platform }}"
+        docker-cache: ${{inputs.docker-cache }}
         docker-metadata-tags: |
           type=ref,event=branch
           type=ref,event=pr
