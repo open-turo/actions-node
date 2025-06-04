@@ -10,6 +10,14 @@ inputs:
     description: Docker flavor to use for docker metadata
     default: |
       latest=false
+  docker-push:
+    required: false
+    description: Whether to push the image to the registry. Defaults to true.
+    default: "true"
+  docker-cache:
+    required: false
+    description: Whether to use Docker layer caching. Defaults to true.
+    default: "true"
   dockerhub-user:
     required: true
     description: username for dockerhub
@@ -42,6 +50,9 @@ outputs:
   image-with-tag:
     description: Full image with tag - <image-name>:<image-version>
     value: ${{ steps.config.outputs.image-name }}:${{ inputs.image-version }}
+  image-digest:
+    description: The digest for the docker image
+    value: ${{ steps.docker-build-cached.outputs.digest || steps.docker-build-no-cache.outputs.digest }}
 
 runs:
   using: composite
@@ -84,9 +95,11 @@ runs:
           ${{ steps.config.outputs.image-name }}
         flavor: ${{ inputs.docker-flavor }}
         tags: |
-          ${{ inputs.image-tags }}
-    - name: Build and push
+          ${{ inputs.docker-metadata-tags }}
+    - name: Build and push (with cache)
+      if: inputs.docker-cache == 'true'
       uses: docker/build-push-action@v6
+      id: docker-build-cached
       with:
         context: .
         platforms: ${{ inputs.image-platform }}
@@ -100,6 +113,30 @@ runs:
         secrets: |
           NPM_AUTH_TOKEN=${{ inputs.npm-auth-token }}
           NPM_TOKEN=${{ inputs.npm-token }}
-        push: true
-        tags: ${{ steps.config.outputs.image-name }}:${{ inputs.image-version }}
+        push: ${{ inputs.docker-push == 'true' }}
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        cache-from: |
+          type=registry,ref=docker.io/${{ steps.config.outputs.image-name }},tag=buildcache
+        cache-to: |
+          type=registry,ref=docker.io/${{ steps.config.outputs.image-name }},tag=buildcache,mode=max,compression=zstd
+    - name: Build and push (without cache)
+      if: inputs.docker-cache != 'true'
+      uses: docker/build-push-action@v6
+      id: docker-build-no-cache
+      with:
+        context: .
+        platforms: ${{ inputs.image-platform }}
+        file: ${{ steps.config.outputs.dockerfile }}
+        build-args: |
+          GIT_COMMIT=${{ github.sha }}
+          BUILDTIME=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.created'] }}
+          VERSION=${{ inputs.image-version }}
+          REVISION=${{ inputs.image-version }}
+          BRANCH=${{ fromJSON(steps.meta.outputs.json).labels['org.opencontainers.image.branch'] }}
+        secrets: |
+          NPM_AUTH_TOKEN=${{ inputs.npm-auth-token }}
+          NPM_TOKEN=${{ inputs.npm-token }}
+        push: ${{ inputs.docker-push == 'true' }}
+        tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
