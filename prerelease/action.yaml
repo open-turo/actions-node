@@ -133,7 +133,7 @@ runs:
         echo "sha=$sha"
         echo "sha=$sha" >> $GITHUB_OUTPUT
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         fetch-depth: ${{ inputs.checkout-fetch-depth }}
         ref: ${{ steps.source-vars.outputs.branch }}
