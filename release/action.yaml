@@ -89,7 +89,7 @@ runs:
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
-    - uses: 8BitJonny/gh-get-current-pr@3.0.0
+    - uses: 8BitJonny/gh-get-current-pr@4.0.0
       id: PR
       with:
         sha: ${{ github.event.pull_request.head.sha }}

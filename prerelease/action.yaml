@@ -139,7 +139,7 @@ runs:
         ref: ${{ steps.source-vars.outputs.branch }}
 
     # Find PR
-    - uses: 8BitJonny/gh-get-current-pr@3.0.0
+    - uses: 8BitJonny/gh-get-current-pr@4.0.0
       id: PR
       with:
         sha: ${{ steps.source-vars.outputs.sha }}
