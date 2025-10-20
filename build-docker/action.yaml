@@ -64,15 +64,17 @@ runs:
       run: echo "$GITHUB_CONTEXT"
     - id: config
       shell: bash
+      env:
+        DOCKER_CONFIG_FILE: ${{ inputs.docker-config-file }}
       run: |
         # if docker-config file does not exist - fail
-        if [ ! -f "${{ inputs.docker-config-file }}" ]; then
-          echo "::error::Docker config file not found: ${{ inputs.docker-config-file }}" && exit 1
+        if [ ! -f "$DOCKER_CONFIG_FILE" ]; then
+          echo "::error::Docker config file not found: $DOCKER_CONFIG_FILE" && exit 1
         fi
-        image_name=$(jq -r .imageName ${{ inputs.docker-config-file }})
+        image_name=$(jq -r .imageName $DOCKER_CONFIG_FILE)
         echo "image-name: ${image_name}"
         echo "image-name=${image_name}" >> $GITHUB_OUTPUT
-        dockerfile=$(jq -r '.dockerfile // "./Dockerfile"' ${{ inputs.docker-config-file }})
+        dockerfile=$(jq -r '.dockerfile // "./Dockerfile"' $DOCKER_CONFIG_FILE)
         echo "Dockerfile: ${dockerfile}"
         echo "dockerfile=${dockerfile}" >> $GITHUB_OUTPUT
         echo "image-version: ${{ inputs.image-version }}"

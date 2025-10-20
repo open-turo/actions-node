@@ -46,17 +46,19 @@ runs:
     - name: Run lint script (npm)
       if: steps.install_dependencies.outputs.package-manager == 'npm'
       shell: bash
-      run: npm run ${{ inputs.lint-script }}
       env:
+        LINT_SCRIPT: ${{ inputs.lint-script }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
+      run: npm run $LINT_SCRIPT
     - name: Run lint script (yarn)
       if: steps.install_dependencies.outputs.package-manager == 'yarn'
       shell: bash
-      run: yarn ${{ inputs.lint-script }}
       env:
+        LINT_SCRIPT: ${{ inputs.lint-script }}
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
+      run: yarn $LINT_SCRIPT
     - name: Check for .pre-commit-config file
       id: check_pre_commit_config
       uses: andstor/file-existence-action@v3
@@ -83,7 +85,10 @@ runs:
       shell: bash
     - if: ${{ inputs.internal-dependency-prefixes != '' }}
       name: Run Beta Release Check
-      run: bash ${{ runner.temp }}/beta-check.sh ${{ inputs.internal-dependency-prefixes }}
+      env:
+        RUNNER_TEMP: ${{ runner.temp }}
+        INTERNAL_DEPS: ${{ inputs.internal-dependency-prefixes }}
+      run: bash $RUNNER_TEMP/beta-check.sh $INTERNAL_DEPS
       shell: bash
     - name: Check release notes on pull_request
       if: github.event_name == 'pull_request'
