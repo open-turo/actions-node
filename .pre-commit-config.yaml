@@ -7,7 +7,7 @@ repos:
         stages: [commit-msg]
         additional_dependencies: ["@open-turo/commitlint-config-conventional"]
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v9.38.0
+    rev: v9.39.0
     hooks:
       - id: eslint
   - repo: https://github.com/pre-commit/mirrors-prettier
