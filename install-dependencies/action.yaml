@@ -56,8 +56,8 @@ runs:
         bucket: ${{ inputs.s3-bucket-name }}
         use-fallback: false
         path: node_modules
-        key: ${{ env.cache-name }}-${{ steps.lockfile_hash.outputs.hash }}
-        restore-keys: ${{ env.cache-name }}-
+        key: ${{ env.cache-name }}-${{ runner.arch }}-${{ steps.lockfile_hash.outputs.hash }}
+        restore-keys: ${{ env.cache-name }}-${{ runner.arch }}-
       env:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
         cache-name: ${{ github.event.repository.name }}/cache-node-modules
