@@ -54,7 +54,7 @@ runs:
       id: read_cache
       with:
         bucket: ${{ inputs.s3-bucket-name }}
-        use-fallback: false
+        use-fallback: true
         path: node_modules
         key: ${{ env.cache-name }}-${{ runner.arch }}-${{ steps.lockfile_hash.outputs.hash }}
         restore-keys: ${{ env.cache-name }}-${{ runner.arch }}-
