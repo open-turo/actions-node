@@ -53,6 +53,9 @@ outputs:
   image-digest:
     description: The digest for the docker image
     value: ${{ steps.docker-build-cached.outputs.digest || steps.docker-build-no-cache.outputs.digest }}
+  cache-key:
+    description: The cache key used for Docker layer caching (architecture-specific)
+    value: buildcache-${{ steps.config.outputs.cache-suffix }}
 
 runs:
   using: composite
@@ -83,6 +86,12 @@ runs:
         echo "image-version: $IMAGE_VERSION"
         echo "image-platform: $IMAGE_PLATFORM"
         echo "docker-metadata-tags: $DOCKER_METADATA_TAGS"
+
+        # Generate architecture-specific cache suffix from platform
+        # Examples: linux/amd64 -> amd64, linux/arm64/v8 -> arm64-v8
+        cache_suffix=$(echo "$IMAGE_PLATFORM" | sed 's|linux/||' | sed 's|/|-|g')
+        echo "cache-suffix: ${cache_suffix}"
+        echo "cache-suffix=${cache_suffix}" >> $GITHUB_OUTPUT
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
@@ -122,9 +131,9 @@ runs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         cache-from: |
-          type=registry,ref=docker.io/${{ steps.config.outputs.image-name }},tag=buildcache
+          type=registry,ref=docker.io/${{ steps.config.outputs.image-name }}:buildcache-${{ steps.config.outputs.cache-suffix }}
         cache-to: |
-          type=registry,ref=docker.io/${{ steps.config.outputs.image-name }},tag=buildcache,mode=max,compression=zstd
+          type=registry,ref=docker.io/${{ steps.config.outputs.image-name }}:buildcache-${{ steps.config.outputs.cache-suffix }},mode=max,compression=zstd
     - name: Build and push (without cache)
       if: inputs.docker-cache != 'true'
       uses: docker/build-push-action@v6
