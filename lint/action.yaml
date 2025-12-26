@@ -59,6 +59,22 @@ runs:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
       run: yarn $LINT_SCRIPT
+    - name: Run lint script (pnpm)
+      if: steps.install_dependencies.outputs.package-manager == 'pnpm'
+      shell: bash
+      env:
+        LINT_SCRIPT: ${{ inputs.lint-script }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: pnpm $LINT_SCRIPT
+    - name: Run lint script (bun)
+      if: steps.install_dependencies.outputs.package-manager == 'bun'
+      shell: bash
+      env:
+        LINT_SCRIPT: ${{ inputs.lint-script }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: bun run $LINT_SCRIPT
     - name: Check for .pre-commit-config file
       id: check_pre_commit_config
       uses: andstor/file-existence-action@v3

@@ -42,8 +42,7 @@ jobs:
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.
-- This action checks for a `yarn.lock` file to figure out which package manager
-  to use to install dependencies; it supports `npm` and `yarn`.
+- This action checks for `bun.lock`, `pnpm-lock.yaml`, `yarn.lock`, and `package-lock.json` to determine which package manager to use to install dependencies; it supports `bun`, `pnpm`, `yarn`, and `npm` (with priority given to bun, then pnpm, then yarn, then npm).
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs source="action.yaml" -->

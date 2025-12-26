@@ -27,7 +27,7 @@ outputs:
     value: ${{ steps.read_cache.outputs.cache-hit }}
   package-manager:
     description: The package manager used to install dependencies
-    value: ${{ steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn' || 'npm' }}
+    value: ${{ steps.check_bun_lock.outputs.files_exists == 'true' && 'bun' || (steps.check_pnpm_lock.outputs.files_exists == 'true' && 'pnpm' || (steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn') || (steps.check_npm_lock.outputs.files_exists == 'true' && 'npm')) }}
 runs:
   using: composite
   steps:
@@ -38,15 +38,30 @@ runs:
         fetch-depth: 0
     - name: Setup tools
       uses: open-turo/action-setup-tools@v3
+    - name: Check for package-lock.json
+      id: check_npm_lock
+      uses: andstor/file-existence-action@v3
+      with:
+        files: package-lock.json
+    - name: Check for pnpm-lock.yaml
+      id: check_pnpm_lock
+      uses: andstor/file-existence-action@v3
+      with:
+        files: pnpm-lock.yaml
     - name: Check for yarn.lock
       id: check_yarn_lock
       uses: andstor/file-existence-action@v3
       with:
         files: yarn.lock
+    - name: Check for bun.lock
+      id: check_bun_lock
+      uses: andstor/file-existence-action@v3
+      with:
+        files: bun.lock
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
-      run: echo "hash=${{ steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || hashFiles('**/package-lock.json') }}" >> $GITHUB_OUTPUT
+      run: echo "hash=${{ steps.check_bun_lock.outputs.files_exists == 'true' && hashFiles('**/bun.lock') || (steps.check_pnpm_lock.outputs.files_exists == 'true' && hashFiles('**/pnpm-lock.yaml') || (steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || (steps.check_npm_lock.outputs.files_exists == 'true' && hashFiles('**/package-lock.json')))) }}" >> $GITHUB_OUTPUT
       shell: bash
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
@@ -61,6 +76,18 @@ runs:
       env:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
         cache-name: ${{ github.event.repository.name }}/cache-node-modules
+    - name: Install dependencies (bun)
+      if: steps.check_bun_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: bun install --frozen-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Install dependencies (pnpm)
+      if: steps.check_pnpm_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: pnpm install --frozen-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (yarn)
       if: steps.check_yarn_lock.outputs.files_exists == 'true'
       shell: bash
@@ -68,7 +95,7 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (npm)
-      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      if: steps.check_npm_lock.outputs.files_exists == 'true'
       shell: bash
       run: npm ci
       env:
