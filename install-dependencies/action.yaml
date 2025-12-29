@@ -26,8 +26,8 @@ outputs:
     description: Whether the cache was hit when installing dependencies
     value: ${{ steps.read_cache.outputs.cache-hit }}
   package-manager:
-    description: The package manager used to install dependencies
-    value: ${{ steps.check_bun_lock.outputs.files_exists == 'true' && 'bun' || (steps.check_pnpm_lock.outputs.files_exists == 'true' && 'pnpm' || (steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn') || (steps.check_npm_lock.outputs.files_exists == 'true' && 'npm')) }}
+    description: The package manager used to install dependencies. Falls back to NPM by default.
+    value: ${{ steps.check_bun_lock.outputs.files_exists == 'true' && 'bun' || (steps.check_pnpm_lock.outputs.files_exists == 'true' && 'pnpm' || (steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn') || 'npm') }}
 runs:
   using: composite
   steps:
@@ -61,7 +61,7 @@ runs:
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
-      run: echo "hash=${{ steps.check_bun_lock.outputs.files_exists == 'true' && hashFiles('**/bun.lock') || (steps.check_pnpm_lock.outputs.files_exists == 'true' && hashFiles('**/pnpm-lock.yaml') || (steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || (steps.check_npm_lock.outputs.files_exists == 'true' && hashFiles('**/package-lock.json')))) }}" >> $GITHUB_OUTPUT
+      run: echo "hash=${{ steps.check_bun_lock.outputs.files_exists == 'true' && hashFiles('**/bun.lock') || (steps.check_pnpm_lock.outputs.files_exists == 'true' && hashFiles('**/pnpm-lock.yaml') || (steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || hashFiles('**/package-lock.json'))) }}" >> $GITHUB_OUTPUT
       shell: bash
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
