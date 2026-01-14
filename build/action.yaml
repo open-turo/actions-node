@@ -52,3 +52,17 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Run build script (pnpm)
+      if: steps.install_dependencies.outputs.package-manager == 'pnpm'
+      shell: bash
+      run: pnpm ${{ inputs.build-script }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Run build script (bun)
+      if: steps.install_dependencies.outputs.package-manager == 'bun'
+      shell: bash
+      run: bun run ${{ inputs.build-script }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}

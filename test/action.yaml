@@ -53,3 +53,17 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Run tests (pnpm)
+      if: steps.install_dependencies.outputs.package-manager == 'pnpm'
+      shell: bash
+      run: pnpm test ${{ inputs.test-flags }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+    - name: Run tests (bun)
+      if: steps.install_dependencies.outputs.package-manager == 'bun'
+      shell: bash
+      run: bun test ${{ inputs.test-flags }}
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
