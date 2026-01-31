@@ -67,6 +67,7 @@ This action runs the following lint checks:
 | `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `pre-commit-stage` | <p>Set this to run pre-commit against a specific stage of the pre-commit hooks.</p> | `false` | `""` |
+| `extra-plugins` | <p>Extra plugins for semanitc-release in lint-release-notes. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.</p> | `false` | `@open-turo/semantic-release-config ` |
 <!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
 
