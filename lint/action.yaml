@@ -29,6 +29,11 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  extra-plugins:
+    required: false
+    description: Extra plugins for semanitc-release in lint-release-notes. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.
+    default: |
+      @open-turo/semantic-release-config
 
 runs:
   using: composite
@@ -96,3 +101,5 @@ runs:
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
+      with:
+        extra-plugins: ${{ inputs.extra-plugins }}
