@@ -29,7 +29,9 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
-
+  pre-commit-stage:
+    required: false
+    description: Set this to run pre-commit against a specific stage of the pre-commit hooks.
 runs:
   using: composite
   steps:
@@ -70,6 +72,7 @@ runs:
       with:
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
+        stage: ${{ inputs.pre-commit-stage }}
     - if: ${{ inputs.internal-dependency-prefixes != '' }}
       name: Create Beta Release Check Script
       run: |
