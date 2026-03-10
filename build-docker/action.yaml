@@ -112,7 +112,7 @@ runs:
           ${{ inputs.docker-metadata-tags }}
     - name: Build and push (with cache)
       if: inputs.docker-cache == 'true'
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       id: docker-build-cached
       with:
         context: .
@@ -136,7 +136,7 @@ runs:
           type=registry,ref=docker.io/${{ steps.config.outputs.image-name }}:buildcache-${{ steps.config.outputs.cache-suffix }},mode=max,compression=zstd
     - name: Build and push (without cache)
       if: inputs.docker-cache != 'true'
-      uses: docker/build-push-action@v6
+      uses: docker/build-push-action@v7
       id: docker-build-no-cache
       with:
         context: .
