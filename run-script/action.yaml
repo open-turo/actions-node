@@ -1,0 +1,61 @@
+name: Run Script
+description: GitHub Action that installs dependencies and runs a script in a Node based repository
+inputs:
+  checkout-repo:
+    required: false
+    description: Perform checkout as first step of action
+    default: "true"
+  script:
+    required: true
+    description: Script to run, should be defined in package.json.
+  script-flags:
+    required: false
+    description: Additional flags and args to pass to the script.
+    default: ""
+  github-token:
+    required: true
+    description: GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'
+    default: ${{ github.token }}
+  npm-auth-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.
+  npm-token:
+    required: false
+    description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  s3-bucket-name:
+    required: false
+    description: S3 bucket name to cache node_modules to speed up dependency installation.
+  s3-bucket-region:
+    required: false
+    description: S3 bucket region to cache node_modules to speed up dependency installation.
+runs:
+  using: composite
+  steps:
+    - name: Install dependencies
+      id: install_dependencies
+      uses: open-turo/actions-node/install-dependencies@v7
+      with:
+        checkout-repo: ${{ inputs.checkout-repo }}
+        github-token: ${{ inputs.github-token }}
+        npm-auth-token: ${{ inputs.npm-auth-token }}
+        npm-token: ${{ inputs.npm-token }}
+        s3-bucket-name: ${{ inputs.s3-bucket-name }}
+        s3-bucket-region: ${{ inputs.s3-bucket-region }}
+    - name: Run script (npm)
+      if: ${{ steps.install_dependencies.outputs.package-manager == 'npm' && inputs.script != '' }}
+      shell: bash
+      env:
+        SCRIPT: ${{ inputs.script }}
+        SCRIPT_FLAGS: ${{ inputs.script-flags }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: npm run "$SCRIPT" ${SCRIPT_FLAGS:+-- $SCRIPT_FLAGS}
+    - name: Run script (yarn)
+      if: ${{ steps.install_dependencies.outputs.package-manager == 'yarn' && inputs.script != '' }}
+      shell: bash
+      env:
+        SCRIPT: ${{ inputs.script }}
+        SCRIPT_FLAGS: ${{ inputs.script-flags }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: yarn "$SCRIPT" $SCRIPT_FLAGS
