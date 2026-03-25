@@ -35,32 +35,16 @@ inputs:
 runs:
   using: composite
   steps:
-    - name: Install dependencies
-      id: install_dependencies
-      uses: open-turo/actions-node/install-dependencies@v7
+    - name: Lint
+      uses: open-turo/actions-node/run-script@v7
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
+        script: ${{ inputs.lint-script }}
         github-token: ${{ inputs.github-token }}
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
-    - name: Run lint script (npm)
-      if: steps.install_dependencies.outputs.package-manager == 'npm'
-      shell: bash
-      env:
-        LINT_SCRIPT: ${{ inputs.lint-script }}
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
-      run: npm run $LINT_SCRIPT
-    - name: Run lint script (yarn)
-      if: steps.install_dependencies.outputs.package-manager == 'yarn'
-      shell: bash
-      env:
-        LINT_SCRIPT: ${{ inputs.lint-script }}
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        NPM_TOKEN: ${{ inputs.npm-token }}
-      run: yarn $LINT_SCRIPT
     - name: Check for .pre-commit-config file
       id: check_pre_commit_config
       uses: andstor/file-existence-action@v3
