@@ -1,6 +1,6 @@
 # `open-turo/actions-node`
 
-GitHub Actions for `node` based repositories. It uses `yarn` as package manager.
+GitHub Actions for `node` based repositories. It supports `bun`, `pnpm`, `yarn`, and `npm` as package managers.
 
 [![Release](https://img.shields.io/github/v/release/open-turo/actions-node)](https://github.com/open-turo/actions-node/releases/)
 [![Tests pass/fail](https://img.shields.io/github/workflow/status/open-turo/actions-node/CI)](https://github.com/open-turo/actions-node/actions/)
@@ -15,7 +15,7 @@ GitHub Actions for `node` based repositories. It uses `yarn` as package manager.
 
 ### action: [`lint`](./lint)
 
-Lint will run pre-commit linters and eslint against the consumer repository, optionally checking out, and installing node, yarn and any other required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools).
+Lint will run pre-commit linters and eslint against the consumer repository, optionally checking out, and installing node, bun/pnpm/yarn/npm and any other required tools with [action-setup-tools](https://github.com/open-turo/action-setup-tools).
 
 See usage [here](./lint/README.md#usage).
 
