@@ -50,7 +50,7 @@ runs:
       shell: bash
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
-      uses: everpcpc/actions-cache@v2
+      uses: everpcpc/actions-cache@v3
       id: read_cache
       with:
         bucket: ${{ inputs.s3-bucket-name }}
