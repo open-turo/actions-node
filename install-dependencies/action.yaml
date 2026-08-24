@@ -82,10 +82,24 @@ runs:
       run: bun install --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Run postinstall (bun)
+      if: steps.check_bun_lock.outputs.files_exists == 'true'
+      shell: bash
+      run: bun run postinstall
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (pnpm)
       if: steps.check_pnpm_lock.outputs.files_exists == 'true'
       shell: bash
       run: pnpm install --frozen-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Run postinstall (pnpm)
+      if: steps.check_pnpm_lock.outputs.files_exists == 'true'
+      shell: bash
+      # pnpm skips lifecycle scripts when nothing was added to node_modules (cache hit).
+      # Re-run explicitly so postinstall always fires (e.g. patch-package, locale extraction).
+      run: pnpm run postinstall
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (yarn)
@@ -97,6 +111,8 @@ runs:
     - name: Install dependencies (npm)
       if: steps.check_npm_lock.outputs.files_exists == 'true'
       shell: bash
-      run: npm ci
+      # `npm ci` wipes node_modules before installing, defeating the S3 cache.
+      # `--prefer-offline` reuses cached tarballs while still running lifecycle scripts.
+      run: npm install --prefer-offline
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
