@@ -63,7 +63,7 @@ jobs:
 | name | description |
 | --- | --- |
 | `cache-hit` | <p>Whether the cache was hit when installing dependencies</p> |
-| `package-manager` | <p>The package manager used to install dependencies. Falls back to NPM by default.</p> |
+| `package-manager` | <p>The package manager used to install dependencies (yarn, npm, pnpm, or bun)</p> |
 <!-- action-docs-outputs source="action.yaml" -->
 <!-- action-docs-runs source="action.yaml" -->
 ## Runs

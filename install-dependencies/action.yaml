@@ -26,8 +26,8 @@ outputs:
     description: Whether the cache was hit when installing dependencies
     value: ${{ steps.read_cache.outputs.cache-hit }}
   package-manager:
-    description: The package manager used to install dependencies. Falls back to NPM by default.
-    value: ${{ steps.check_bun_lock.outputs.files_exists == 'true' && 'bun' || (steps.check_pnpm_lock.outputs.files_exists == 'true' && 'pnpm' || (steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn') || 'npm') }}
+    description: The package manager used to install dependencies (yarn, npm, pnpm, or bun)
+    value: ${{ steps.detect_pm.outputs.package_manager_public }}
 runs:
   using: composite
   steps:
@@ -38,31 +38,53 @@ runs:
         fetch-depth: 0
     - name: Setup tools
       uses: open-turo/action-setup-tools@v3
-    - name: Check for package-lock.json
-      id: check_npm_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: package-lock.json
-    - name: Check for pnpm-lock.yaml
-      id: check_pnpm_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: pnpm-lock.yaml
-    - name: Check for yarn.lock
-      id: check_yarn_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: yarn.lock
-    - name: Check for bun.lock
-      id: check_bun_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: bun.lock
+    - name: Detect package manager
+      id: detect_pm
+      shell: bash
+      run: |
+        if [ -f bun.lock ] || [ -f bun.lockb ]; then
+          echo "package_manager=bun" >> "$GITHUB_OUTPUT"
+          echo "package_manager_public=bun" >> "$GITHUB_OUTPUT"
+        elif [ -f pnpm-lock.yaml ]; then
+          echo "package_manager=pnpm" >> "$GITHUB_OUTPUT"
+          echo "package_manager_public=pnpm" >> "$GITHUB_OUTPUT"
+        elif [ -f yarn.lock ]; then
+          YARN_MAJOR=$(node -e "try{const p=JSON.parse(require('fs').readFileSync('package.json','utf8'));const m=(p.packageManager||'').match(/^yarn@(\d+)/);process.stdout.write(m?m[1]:'1');}catch(e){process.stdout.write('1');}" 2>/dev/null || echo "1")
+          if [ "${YARN_MAJOR:-1}" -ge "2" ] 2>/dev/null; then
+            echo "package_manager=yarn-berry" >> "$GITHUB_OUTPUT"
+          else
+            echo "package_manager=yarn" >> "$GITHUB_OUTPUT"
+          fi
+          echo "package_manager_public=yarn" >> "$GITHUB_OUTPUT"
+        else
+          echo "package_manager=npm" >> "$GITHUB_OUTPUT"
+          echo "package_manager_public=npm" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Setup pnpm
+      if: steps.detect_pm.outputs.package_manager == 'pnpm'
+      uses: pnpm/action-setup@v4
+    - name: Setup Bun
+      if: steps.detect_pm.outputs.package_manager == 'bun'
+      uses: oven-sh/setup-bun@v2
+    - name: Enable corepack for Yarn Berry
+      if: steps.detect_pm.outputs.package_manager == 'yarn-berry'
+      shell: bash
+      run: corepack enable
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
-      run: echo "hash=${{ steps.check_bun_lock.outputs.files_exists == 'true' && hashFiles('**/bun.lock') || (steps.check_pnpm_lock.outputs.files_exists == 'true' && hashFiles('**/pnpm-lock.yaml') || (steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || hashFiles('**/package-lock.json'))) }}" >> $GITHUB_OUTPUT
       shell: bash
+      run: |
+        PM="${{ steps.detect_pm.outputs.package_manager }}"
+        if [ "$PM" = "bun" ]; then
+          echo "hash=${{ hashFiles('**/bun.lock', '**/bun.lockb') }}" >> "$GITHUB_OUTPUT"
+        elif [ "$PM" = "pnpm" ]; then
+          echo "hash=${{ hashFiles('**/pnpm-lock.yaml') }}" >> "$GITHUB_OUTPUT"
+        elif [ "$PM" = "yarn" ] || [ "$PM" = "yarn-berry" ]; then
+          echo "hash=${{ hashFiles('**/yarn.lock') }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "hash=${{ hashFiles('**/package-lock.json') }}" >> "$GITHUB_OUTPUT"
+        fi
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
       uses: everpcpc/actions-cache@v3
@@ -77,42 +99,32 @@ runs:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
         cache-name: ${{ github.event.repository.name }}/cache-node-modules
     - name: Install dependencies (bun)
-      if: steps.check_bun_lock.outputs.files_exists == 'true'
+      if: steps.detect_pm.outputs.package_manager == 'bun'
       shell: bash
       run: bun install --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-    - name: Run postinstall (bun)
-      if: steps.check_bun_lock.outputs.files_exists == 'true'
-      shell: bash
-      run: bun run postinstall
-      env:
-        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (pnpm)
-      if: steps.check_pnpm_lock.outputs.files_exists == 'true'
+      if: steps.detect_pm.outputs.package_manager == 'pnpm'
       shell: bash
       run: pnpm install --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-    - name: Run postinstall (pnpm)
-      if: steps.check_pnpm_lock.outputs.files_exists == 'true'
+    - name: Install dependencies (yarn berry)
+      if: steps.detect_pm.outputs.package_manager == 'yarn-berry'
       shell: bash
-      # pnpm skips lifecycle scripts when nothing was added to node_modules (cache hit).
-      # Re-run explicitly so postinstall always fires (e.g. patch-package, locale extraction).
-      run: pnpm run postinstall
+      run: yarn install --immutable
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (yarn)
-      if: steps.check_yarn_lock.outputs.files_exists == 'true'
+      if: steps.detect_pm.outputs.package_manager == 'yarn'
       shell: bash
       run: yarn --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (npm)
-      if: steps.check_npm_lock.outputs.files_exists == 'true'
+      if: steps.detect_pm.outputs.package_manager == 'npm'
       shell: bash
-      # `npm ci` wipes node_modules before installing, defeating the S3 cache.
-      # `--prefer-offline` reuses cached tarballs while still running lifecycle scripts.
-      run: npm install --prefer-offline
+      run: npm ci
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
