@@ -70,6 +70,39 @@ runs:
       if: steps.detect_pm.outputs.package_manager == 'yarn-berry'
       shell: bash
       run: corepack enable
+    - name: Configure private registry auth (pnpm/bun)
+      if: >-
+        steps.detect_pm.outputs.package_manager == 'pnpm' ||
+        steps.detect_pm.outputs.package_manager == 'bun'
+      shell: bash
+      env:
+        NPM_AUTH_TOKEN_INPUT: ${{ inputs.npm-auth-token }}
+      run: |
+        [ -z "$NPM_AUTH_TOKEN_INPUT" ] && exit 0
+        # pnpm blocks ${VAR} expansion in project .npmrc since v11.5.3 (June 2026 security fix).
+        # bun reads ~/.npmrc but we write here for reliability.
+        # Reads registry URLs from project .npmrc and writes _auth to user-level ~/.npmrc.
+        while IFS= read -r line; do
+          reg=$(echo "$line" | sed 's/.*:registry=//' | tr -d '[:space:]')
+          [ -z "$reg" ] && continue
+          reg_key="${reg#https:}"
+          echo "${reg_key}:_auth=$NPM_AUTH_TOKEN_INPUT" >> ~/.npmrc
+          echo "${reg_key}:always-auth=true" >> ~/.npmrc
+        done < <(grep ':registry=' .npmrc 2>/dev/null)
+    - name: Configure private registry auth (Yarn Berry)
+      if: steps.detect_pm.outputs.package_manager == 'yarn-berry'
+      shell: bash
+      env:
+        NPM_AUTH_TOKEN_INPUT: ${{ inputs.npm-auth-token }}
+      run: |
+        [ -z "$NPM_AUTH_TOKEN_INPUT" ] && exit 0
+        # Berry reads ~/.yarnrc.yml, not ~/.npmrc. Uses npmAuthIdent for _auth (base64 user:pass) format.
+        while IFS= read -r line; do
+          reg=$(echo "$line" | sed 's/.*:registry=//' | tr -d '[:space:]')
+          [ -z "$reg" ] && continue
+          reg_key="${reg#https:}"
+          yarn config set "npmRegistries[\"${reg_key}\"].npmAuthIdent" "$NPM_AUTH_TOKEN_INPUT" --home
+        done < <(grep ':registry=' .npmrc 2>/dev/null)
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
