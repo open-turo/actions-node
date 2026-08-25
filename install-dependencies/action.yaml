@@ -42,14 +42,17 @@ runs:
       id: detect_pm
       shell: bash
       run: |
-        if [ -f bun.lock ] || [ -f bun.lockb ]; then
+        # Primary: packageManager field in package.json. Fallback: lockfile presence.
+        PM_FIELD=$(node -e "try{const p=JSON.parse(require('fs').readFileSync('package.json','utf8'));const m=(p.packageManager||'').match(/^([^@]+)/);process.stdout.write(m?m[1]:'');}catch(e){}" 2>/dev/null || echo "")
+        YARN_MAJOR=$(node -e "try{const p=JSON.parse(require('fs').readFileSync('package.json','utf8'));const m=(p.packageManager||'').match(/^yarn@(\d+)/);process.stdout.write(m?m[1]:'1');}catch(e){process.stdout.write('1');}" 2>/dev/null || echo "1")
+
+        if [ "$PM_FIELD" = "bun" ] || ([ "$PM_FIELD" != "pnpm" ] && [ "$PM_FIELD" != "npm" ] && ([ -f bun.lock ] || [ -f bun.lockb ])); then
           echo "package_manager=bun" >> "$GITHUB_OUTPUT"
           echo "package_manager_public=bun" >> "$GITHUB_OUTPUT"
-        elif [ -f pnpm-lock.yaml ]; then
+        elif [ "$PM_FIELD" = "pnpm" ] || ([ "$PM_FIELD" != "bun" ] && [ "$PM_FIELD" != "npm" ] && [ -f pnpm-lock.yaml ]); then
           echo "package_manager=pnpm" >> "$GITHUB_OUTPUT"
           echo "package_manager_public=pnpm" >> "$GITHUB_OUTPUT"
-        elif [ -f yarn.lock ]; then
-          YARN_MAJOR=$(node -e "try{const p=JSON.parse(require('fs').readFileSync('package.json','utf8'));const m=(p.packageManager||'').match(/^yarn@(\d+)/);process.stdout.write(m?m[1]:'1');}catch(e){process.stdout.write('1');}" 2>/dev/null || echo "1")
+        elif [ -f yarn.lock ] && [ "$PM_FIELD" != "npm" ] && [ "$PM_FIELD" != "bun" ] && [ "$PM_FIELD" != "pnpm" ]; then
           if [ "${YARN_MAJOR:-1}" -ge "2" ] 2>/dev/null; then
             echo "package_manager=yarn-berry" >> "$GITHUB_OUTPUT"
           else
