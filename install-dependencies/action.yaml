@@ -99,13 +99,27 @@ runs:
         NPM_AUTH_TOKEN_INPUT: ${{ inputs.npm-auth-token }}
       run: |
         [ -z "$NPM_AUTH_TOKEN_INPUT" ] && exit 0
-        # Berry reads ~/.yarnrc.yml, not ~/.npmrc. Uses npmAuthIdent for _auth (base64 user:pass) format.
-        while IFS= read -r line; do
-          reg=$(echo "$line" | sed 's/.*:registry=//' | tr -d '[:space:]')
-          [ -z "$reg" ] && continue
-          reg_key="${reg#https:}"
-          yarn config set "npmRegistries[\"${reg_key}\"].npmAuthIdent" "$NPM_AUTH_TOKEN_INPUT" --home
-        done < <(grep ':registry=' .npmrc 2>/dev/null)
+        # Write auth directly to ~/.yarnrc.yml — avoids `yarn config set` quoting issues
+        # and corepack version ambiguity. Appends only if npmRegistries not yet present.
+        node - << 'JSEOF'
+        const fs = require('fs'), os = require('os'), path = require('path');
+        const token = process.env.NPM_AUTH_TOKEN_INPUT;
+        const yarnrcPath = path.join(os.homedir(), '.yarnrc.yml');
+        let existing = ''; try { existing = fs.readFileSync(yarnrcPath, 'utf8'); } catch(e) {}
+        let npmrc = ''; try { npmrc = fs.readFileSync('.npmrc', 'utf8'); } catch(e) { process.exit(0); }
+        const regs = npmrc.split('\n')
+          .filter(l => /:registry=/.test(l))
+          .map(l => l.split(':registry=')[1]?.trim())
+          .filter(Boolean);
+        if (!regs.length) process.exit(0);
+        let toAppend = existing.includes('npmRegistries') ? '' : 'npmRegistries:\n';
+        for (const reg of regs) {
+          const key = reg.replace(/^https:/, '');
+          if (existing.includes(key)) continue;
+          toAppend += `  "${key}":\n    npmAuthIdent: "${token}"\n    npmAlwaysAuth: true\n`;
+        }
+        if (toAppend) { fs.appendFileSync(yarnrcPath, toAppend); console.log('Berry auth written to ~/.yarnrc.yml'); }
+        JSEOF
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
