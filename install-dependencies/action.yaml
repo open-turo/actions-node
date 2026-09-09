@@ -26,8 +26,8 @@ outputs:
     description: Whether the cache was hit when installing dependencies
     value: ${{ steps.read_cache.outputs.cache-hit }}
   package-manager:
-    description: The package manager used to install dependencies
-    value: ${{ steps.check_yarn_lock.outputs.files_exists == 'true' && 'yarn' || 'npm' }}
+    description: The package manager used to install dependencies (yarn, npm, pnpm, or bun)
+    value: ${{ steps.detect_pm.outputs.package_manager_public }}
 runs:
   using: composite
   steps:
@@ -38,16 +38,77 @@ runs:
         fetch-depth: 0
     - name: Setup tools
       uses: open-turo/action-setup-tools@v3
-    - name: Check for yarn.lock
-      id: check_yarn_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: yarn.lock
+    - name: Detect package manager
+      id: detect_pm
+      shell: bash
+      run: |
+        # Primary: packageManager field in package.json. Fallback: lockfile presence.
+        PM_FIELD=$(node -e "try{const p=JSON.parse(require('fs').readFileSync('package.json','utf8'));const m=(p.packageManager||'').match(/^([^@]+)/);process.stdout.write(m?m[1]:'');}catch(e){}" 2>/dev/null || echo "")
+        YARN_MAJOR=$(node -e "try{const p=JSON.parse(require('fs').readFileSync('package.json','utf8'));const m=(p.packageManager||'').match(/^yarn@(\d+)/);process.stdout.write(m?m[1]:'1');}catch(e){process.stdout.write('1');}" 2>/dev/null || echo "1")
+
+        if [ "$PM_FIELD" = "bun" ] || ([ "$PM_FIELD" != "pnpm" ] && [ "$PM_FIELD" != "npm" ] && ([ -f bun.lock ] || [ -f bun.lockb ])); then
+          echo "package_manager=bun" >> "$GITHUB_OUTPUT"
+          echo "package_manager_public=bun" >> "$GITHUB_OUTPUT"
+        elif [ "$PM_FIELD" = "pnpm" ] || ([ "$PM_FIELD" != "bun" ] && [ "$PM_FIELD" != "npm" ] && [ -f pnpm-lock.yaml ]); then
+          echo "package_manager=pnpm" >> "$GITHUB_OUTPUT"
+          echo "package_manager_public=pnpm" >> "$GITHUB_OUTPUT"
+        elif [ -f yarn.lock ] && [ "$PM_FIELD" != "npm" ] && [ "$PM_FIELD" != "bun" ] && [ "$PM_FIELD" != "pnpm" ]; then
+          if [ "${YARN_MAJOR:-1}" -ge "2" ] 2>/dev/null; then
+            echo "package_manager=yarn-berry" >> "$GITHUB_OUTPUT"
+          else
+            echo "package_manager=yarn" >> "$GITHUB_OUTPUT"
+          fi
+          echo "package_manager_public=yarn" >> "$GITHUB_OUTPUT"
+        else
+          echo "package_manager=npm" >> "$GITHUB_OUTPUT"
+          echo "package_manager_public=npm" >> "$GITHUB_OUTPUT"
+        fi
+    - name: Setup pnpm
+      if: steps.detect_pm.outputs.package_manager == 'pnpm'
+      uses: pnpm/action-setup@v4
+    - name: Setup Bun
+      if: steps.detect_pm.outputs.package_manager == 'bun'
+      uses: oven-sh/setup-bun@v2
+    - name: Enable corepack for Yarn Berry
+      if: steps.detect_pm.outputs.package_manager == 'yarn-berry'
+      shell: bash
+      run: corepack enable
+    - name: Configure private registry auth (pnpm/bun)
+      if: >-
+        steps.detect_pm.outputs.package_manager == 'pnpm' ||
+        steps.detect_pm.outputs.package_manager == 'bun'
+      shell: bash
+      env:
+        NPM_AUTH_TOKEN_INPUT: ${{ inputs.npm-auth-token }}
+      run: |
+        [ -z "$NPM_AUTH_TOKEN_INPUT" ] && exit 0
+        # pnpm blocks ${VAR} expansion in project .npmrc since v11.5.3 (June 2026 security fix).
+        # bun reads ~/.npmrc but we write here for reliability.
+        # Reads registry URLs from project .npmrc and writes _auth to user-level ~/.npmrc.
+        while IFS= read -r line; do
+          reg=$(echo "$line" | sed 's/.*:registry=//' | tr -d '[:space:]')
+          [ -z "$reg" ] && continue
+          reg_key="${reg#https:}"
+          echo "${reg_key}:_auth=$NPM_AUTH_TOKEN_INPUT" >> ~/.npmrc
+          echo "${reg_key}:always-auth=true" >> ~/.npmrc
+        done < <(grep ':registry=' .npmrc 2>/dev/null)
+    # Yarn Berry: auth is handled via ${NPM_AUTH_TOKEN} expansion in the project's .yarnrc.yml.
+    # No inline setup step needed — set NPM_AUTH_TOKEN at the job level in your workflow.
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
-      run: echo "hash=${{ steps.check_yarn_lock.outputs.files_exists == 'true' && hashFiles('**/yarn.lock') || hashFiles('**/package-lock.json') }}" >> $GITHUB_OUTPUT
       shell: bash
+      run: |
+        PM="${{ steps.detect_pm.outputs.package_manager }}"
+        if [ "$PM" = "bun" ]; then
+          echo "hash=${{ hashFiles('**/bun.lock', '**/bun.lockb') }}" >> "$GITHUB_OUTPUT"
+        elif [ "$PM" = "pnpm" ]; then
+          echo "hash=${{ hashFiles('**/pnpm-lock.yaml') }}" >> "$GITHUB_OUTPUT"
+        elif [ "$PM" = "yarn" ] || [ "$PM" = "yarn-berry" ]; then
+          echo "hash=${{ hashFiles('**/yarn.lock') }}" >> "$GITHUB_OUTPUT"
+        else
+          echo "hash=${{ hashFiles('**/package-lock.json') }}" >> "$GITHUB_OUTPUT"
+        fi
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
       uses: everpcpc/actions-cache@v3
@@ -61,14 +122,32 @@ runs:
       env:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
         cache-name: ${{ github.event.repository.name }}/cache-node-modules
+    - name: Install dependencies (bun)
+      if: steps.detect_pm.outputs.package_manager == 'bun'
+      shell: bash
+      run: bun install --frozen-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Install dependencies (pnpm)
+      if: steps.detect_pm.outputs.package_manager == 'pnpm'
+      shell: bash
+      run: pnpm install --frozen-lockfile
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+    - name: Install dependencies (yarn berry)
+      if: steps.detect_pm.outputs.package_manager == 'yarn-berry'
+      shell: bash
+      run: yarn install --immutable
+      env:
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (yarn)
-      if: steps.check_yarn_lock.outputs.files_exists == 'true'
+      if: steps.detect_pm.outputs.package_manager == 'yarn'
       shell: bash
       run: yarn --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (npm)
-      if: steps.check_yarn_lock.outputs.files_exists == 'false'
+      if: steps.detect_pm.outputs.package_manager == 'npm'
       shell: bash
       run: npm ci
       env:

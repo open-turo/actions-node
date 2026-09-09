@@ -33,7 +33,7 @@ runs:
   steps:
     - name: Install dependencies
       id: install_dependencies
-      uses: open-turo/actions-node/install-dependencies@v7
+      uses: open-turo/actions-node/install-dependencies@feat/support-npm-and-pnpm
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         github-token: ${{ inputs.github-token }}
@@ -41,6 +41,24 @@ runs:
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
+    - name: Run script (bun)
+      if: ${{ steps.install_dependencies.outputs.package-manager == 'bun' && inputs.script != '' }}
+      shell: bash
+      env:
+        SCRIPT: ${{ inputs.script }}
+        SCRIPT_FLAGS: ${{ inputs.script-flags }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: bun run "$SCRIPT" ${SCRIPT_FLAGS:+$SCRIPT_FLAGS}
+    - name: Run script (pnpm)
+      if: ${{ steps.install_dependencies.outputs.package-manager == 'pnpm' && inputs.script != '' }}
+      shell: bash
+      env:
+        SCRIPT: ${{ inputs.script }}
+        SCRIPT_FLAGS: ${{ inputs.script-flags }}
+        NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
+        NPM_TOKEN: ${{ inputs.npm-token }}
+      run: pnpm run "$SCRIPT" $SCRIPT_FLAGS
     - name: Run script (npm)
       if: ${{ steps.install_dependencies.outputs.package-manager == 'npm' && inputs.script != '' }}
       shell: bash
@@ -59,3 +77,4 @@ runs:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
       run: yarn "$SCRIPT" $SCRIPT_FLAGS
+
