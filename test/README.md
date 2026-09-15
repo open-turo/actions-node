@@ -41,6 +41,14 @@ jobs:
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.
+- Use `working-directory` when the `package.json` lives in a subdirectory:
+
+```yaml
+- uses: open-turo/actions-node/test@v7
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    working-directory: packages/my-app
+```
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs -->
@@ -53,6 +61,7 @@ jobs:
 | npm-auth-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file. | `false` |  |
 | npm-token | The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry. | `false` |  |
 | test-flags | Flags and args for test command | `false` |  |
+| working-directory | Directory containing the package.json. Defaults to the repo root. | `false` | `.` |
 <!-- action-docs-inputs -->
 <!-- action-docs-outputs -->
 

@@ -50,6 +50,15 @@ This action runs the following lint checks:
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.
+- Use `working-directory` when the `package.json` lives in a subdirectory:
+
+```yaml
+- uses: open-turo/actions-node/lint@v7
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    working-directory: packages/my-app
+```
+
 - This expects that `.commitlintrc.yaml` will be present to enforce [`conventional-commit`](https://github.com/wagoid/commitlint-github-action).
 
 <!-- prettier-ignore-start -->
@@ -66,6 +75,7 @@ This action runs the following lint checks:
 | `internal-dependency-prefixes` | <p>Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'.</p> | `false` | `""` |
 | `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
+| `working-directory` | <p>Directory containing the package.json. Defaults to the repo root.</p> | `false` | `.` |
 | `pre-commit-stage` | <p>Set this to run pre-commit against a specific stage of the pre-commit hooks.</p> | `false` | `""` |
 | `extra-plugins` | <p>Extra plugins for semanitc-release in lint-release-notes. You can also specify specifying version range for the extra plugins if you prefer.  Defaults to install @open-turo/semantic-release-config.</p> | `false` | `@open-turo/semantic-release-config ` |
 <!-- action-docs-inputs source="action.yaml" -->

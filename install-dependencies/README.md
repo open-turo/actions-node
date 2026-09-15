@@ -44,6 +44,14 @@ jobs:
 - By default, this action will perform actions/checkout as its first step.
 - This action checks for a `yarn.lock` file to figure out which package manager
   to use to install dependencies; it supports `npm` and `yarn`.
+- Use `working-directory` when the `package.json` lives in a subdirectory (e.g. a monorepo):
+
+```yaml
+- uses: open-turo/actions-node/install-dependencies@v7
+  with:
+    github-token: ${{ secrets.GITHUB_TOKEN }}
+    working-directory: packages/my-app
+```
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs source="action.yaml" -->
@@ -57,6 +65,7 @@ jobs:
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
 | `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
+| `working-directory` | <p>Directory containing the package.json. Defaults to the repo root.</p> | `false` | `.` |
 <!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
 ## Outputs

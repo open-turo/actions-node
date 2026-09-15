@@ -25,6 +25,10 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  working-directory:
+    required: false
+    description: Directory containing the package.json. Defaults to the repo root.
+    default: "."
 
 runs:
   using: composite
@@ -40,3 +44,4 @@ runs:
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
+        working-directory: ${{ inputs.working-directory }}

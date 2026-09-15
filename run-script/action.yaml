@@ -28,6 +28,10 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  working-directory:
+    required: false
+    description: Directory containing the package.json. Defaults to the repo root.
+    default: "."
 runs:
   using: composite
   steps:
@@ -41,9 +45,11 @@ runs:
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
+        working-directory: ${{ inputs.working-directory }}
     - name: Run script (npm)
       if: ${{ steps.install_dependencies.outputs.package-manager == 'npm' && inputs.script != '' }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       env:
         SCRIPT: ${{ inputs.script }}
         SCRIPT_FLAGS: ${{ inputs.script-flags }}
@@ -53,6 +59,7 @@ runs:
     - name: Run script (yarn)
       if: ${{ steps.install_dependencies.outputs.package-manager == 'yarn' && inputs.script != '' }}
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       env:
         SCRIPT: ${{ inputs.script }}
         SCRIPT_FLAGS: ${{ inputs.script-flags }}
