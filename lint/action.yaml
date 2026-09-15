@@ -46,7 +46,7 @@ runs:
   using: composite
   steps:
     - name: Lint
-      uses: open-turo/actions-node/run-script@v7
+      uses: open-turo/actions-node/run-script@f/allow_changing_working_directory
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         script: ${{ inputs.lint-script }}
