@@ -41,7 +41,9 @@ runs:
       with:
         fetch-depth: 0
     - name: Setup tools
-      uses: open-turo/action-setup-tools@v3
+      uses: open-turo/action-setup-tools@f/allow_changing_working_directory
+      with:
+        working-directory: ${{ inputs.working-directory }}
     - name: Check for yarn.lock
       id: check_yarn_lock
       uses: andstor/file-existence-action@v3
