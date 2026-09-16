@@ -29,7 +29,7 @@ runs:
   using: composite
   steps:
     - name: Build
-      uses: open-turo/actions-node/run-script@v7
+      uses: open-turo/actions-node/run-script@feat/support-npm-and-pnpm
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         script: ${{ inputs.build-script }}

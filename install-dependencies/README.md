@@ -42,8 +42,7 @@ jobs:
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.
-- This action checks for a `yarn.lock` file to figure out which package manager
-  to use to install dependencies; it supports `npm` and `yarn`.
+- This action detects the package manager via `action-setup-tools` (checks `package.json#packageManager`, then lock files: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`); it supports `pnpm`, `yarn`, and `npm`.
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs source="action.yaml" -->
@@ -64,7 +63,7 @@ jobs:
 | name | description |
 | --- | --- |
 | `cache-hit` | <p>Whether the cache was hit when installing dependencies</p> |
-| `package-manager` | <p>The package manager used to install dependencies</p> |
+| `package-manager` | <p>The package manager used to install dependencies (yarn, npm, or pnpm)</p> |
 <!-- action-docs-outputs source="action.yaml" -->
 <!-- action-docs-runs source="action.yaml" -->
 ## Runs
