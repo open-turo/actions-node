@@ -25,12 +25,16 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  working-directory:
+    required: false
+    description: Directory containing the package.json. Defaults to the repo root.
+    default: "."
 
 runs:
   using: composite
   steps:
     - name: Test
-      uses: open-turo/actions-node/run-script@v7
+      uses: open-turo/actions-node/run-script@f/allow_changing_working_directory
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         script: test
@@ -40,3 +44,4 @@ runs:
         npm-token: ${{ inputs.npm-token }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
+        working-directory: ${{ inputs.working-directory }}

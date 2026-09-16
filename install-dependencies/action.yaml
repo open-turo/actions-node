@@ -21,6 +21,10 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  working-directory:
+    required: false
+    description: Directory containing the package.json. Defaults to the repo root.
+    default: "."
 outputs:
   cache-hit:
     description: Whether the cache was hit when installing dependencies
@@ -37,12 +41,14 @@ runs:
       with:
         fetch-depth: 0
     - name: Setup tools
-      uses: open-turo/action-setup-tools@v3
+      uses: open-turo/action-setup-tools@f/allow_changing_working_directory
+      with:
+        working-directory: ${{ inputs.working-directory }}
     - name: Check for yarn.lock
       id: check_yarn_lock
       uses: andstor/file-existence-action@v3
       with:
-        files: yarn.lock
+        files: ${{ inputs.working-directory }}/yarn.lock
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
@@ -55,7 +61,7 @@ runs:
       with:
         bucket: ${{ inputs.s3-bucket-name }}
         use-fallback: true
-        path: node_modules
+        path: ${{ inputs.working-directory }}/node_modules
         key: ${{ env.cache-name }}-${{ runner.arch }}-${{ steps.lockfile_hash.outputs.hash }}
         restore-keys: ${{ env.cache-name }}-${{ runner.arch }}-
       env:
@@ -64,12 +70,14 @@ runs:
     - name: Install dependencies (yarn)
       if: steps.check_yarn_lock.outputs.files_exists == 'true'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: yarn --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
     - name: Install dependencies (npm)
       if: steps.check_yarn_lock.outputs.files_exists == 'false'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: npm ci
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
