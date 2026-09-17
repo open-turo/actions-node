@@ -42,8 +42,7 @@ jobs:
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.
-- This action checks for a `yarn.lock` file to figure out which package manager
-  to use to install dependencies; it supports `npm` and `yarn`.
+- This action detects the package manager via `action-setup-tools` (checks `package.json#packageManager`, then lock files: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`); it supports `pnpm`, `yarn`, and `npm`.
 
 <!-- prettier-ignore-start -->
 <!-- action-docs-inputs source="action.yaml" -->
@@ -55,6 +54,7 @@ jobs:
 | `github-token` | <p>GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |
 | `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
+| `npmrc-auth-file` | <p>Path to the npmrc file used for pnpm authentication. Sets PNPM<em>CONFIG</em>NPMRC<em>AUTH</em>FILE.</p> | `false` | `.npmrc` |
 | `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 <!-- action-docs-inputs source="action.yaml" -->
@@ -64,7 +64,7 @@ jobs:
 | name | description |
 | --- | --- |
 | `cache-hit` | <p>Whether the cache was hit when installing dependencies</p> |
-| `package-manager` | <p>The package manager used to install dependencies</p> |
+| `package-manager` | <p>The package manager used to install dependencies (yarn, npm, or pnpm)</p> |
 <!-- action-docs-outputs source="action.yaml" -->
 <!-- action-docs-runs source="action.yaml" -->
 ## Runs

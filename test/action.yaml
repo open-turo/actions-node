@@ -15,6 +15,10 @@ inputs:
   npm-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
+  npmrc-auth-file:
+    required: false
+    description: Path to the npmrc file used for pnpm authentication. Sets PNPM_CONFIG_NPMRC_AUTH_FILE.
+    default: ".npmrc"
   test-flags:
     required: false
     description: Flags and args for test command
@@ -30,7 +34,7 @@ runs:
   using: composite
   steps:
     - name: Test
-      uses: open-turo/actions-node/run-script@v7
+      uses: open-turo/actions-node/run-script@feat/support-npm-and-pnpm
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         script: test
@@ -38,5 +42,6 @@ runs:
         github-token: ${{ inputs.github-token }}
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
+        npmrc-auth-file: ${{ inputs.npmrc-auth-file }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
