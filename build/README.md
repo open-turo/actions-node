@@ -105,6 +105,12 @@ This action is a `composite` action.
     # Required: false
     # Default: ""
 
+    npmrc-auth-file:
+    # Path to the npmrc file used for pnpm authentication. Sets PNPM_CONFIG_NPMRC_AUTH_FILE.
+    #
+    # Required: false
+    # Default: .npmrc
+
     s3-bucket-name:
     # S3 bucket name to cache node_modules to speed up dependency installation.
     #

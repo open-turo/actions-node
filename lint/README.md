@@ -63,6 +63,7 @@ This action runs the following lint checks:
 | `github-token` | <p>GitHub token that can checkout the repository. e.g. 'secrets.GITHUB_TOKEN'</p> | `true` | `${{ github.token }}` |
 | `npm-auth-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against a private NPM registry configured via a .npmrc file.</p> | `false` | `""` |
 | `npm-token` | <p>The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.</p> | `false` | `""` |
+| `npmrc-auth-file` | <p>Path to the npmrc file used for pnpm authentication. Sets PNPM<em>CONFIG</em>NPMRC<em>AUTH</em>FILE.</p> | `false` | `.npmrc` |
 | `internal-dependency-prefixes` | <p>Prefixes used to match internal dependencies and disallow beta versions. Can take comma-separated values e.g. '@turo,@example'.</p> | `false` | `""` |
 | `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
