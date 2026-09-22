@@ -15,10 +15,6 @@ inputs:
   npm-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
-  npmrc-auth-file:
-    required: false
-    description: Path to the npmrc file used for pnpm authentication. Sets PNPM_CONFIG_NPMRC_AUTH_FILE.
-    default: ".npmrc"
   s3-bucket-name:
     required: false
     description: S3 bucket name to cache node_modules to speed up dependency installation.
@@ -85,7 +81,6 @@ runs:
       run: pnpm install --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
-        PNPM_CONFIG_NPMRC_AUTH_FILE: ${{ inputs.npmrc-auth-file }}
     - name: Install dependencies (yarn)
       if: steps.setup_tools.outputs.package-manager == 'yarn'
       shell: bash
