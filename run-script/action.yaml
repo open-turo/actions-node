@@ -41,7 +41,7 @@ runs:
   steps:
     - name: Install dependencies
       id: install_dependencies
-      uses: open-turo/actions-node/install-dependencies@v7
+      uses: open-turo/actions-node/install-dependencies@test/setup-tools-pr338
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         github-token: ${{ inputs.github-token }}

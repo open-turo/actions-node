@@ -46,7 +46,7 @@ runs:
         fetch-depth: 0
     - name: Setup tools
       id: setup_tools
-      uses: open-turo/action-setup-tools@v3
+      uses: open-turo/action-setup-tools@64434070c4e4fd2455e19302379e61d04a5384ab
       with:
         working-directory: ${{ inputs.working-directory }}
     - name: Compute lockfile hash

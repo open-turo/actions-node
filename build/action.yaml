@@ -33,7 +33,7 @@ runs:
   using: composite
   steps:
     - name: Build
-      uses: open-turo/actions-node/run-script@v7
+      uses: open-turo/actions-node/run-script@test/setup-tools-pr338
       with:
         checkout-repo: ${{ inputs.checkout-repo }}
         script: ${{ inputs.build-script }}
