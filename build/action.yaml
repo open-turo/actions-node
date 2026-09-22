@@ -19,10 +19,6 @@ inputs:
   npm-token:
     required: false
     description: The Node Package Manager (npm) authentication token. This token is used to authenticate against the NPM registry.
-  npmrc-auth-file:
-    required: false
-    description: Path to the npmrc file used for pnpm authentication. Sets PNPM_CONFIG_NPMRC_AUTH_FILE.
-    default: ".npmrc"
   s3-bucket-name:
     required: false
     description: S3 bucket name to cache node_modules to speed up dependency installation.
@@ -40,6 +36,5 @@ runs:
         github-token: ${{ inputs.github-token }}
         npm-auth-token: ${{ inputs.npm-auth-token }}
         npm-token: ${{ inputs.npm-token }}
-        npmrc-auth-file: ${{ inputs.npmrc-auth-file }}
         s3-bucket-name: ${{ inputs.s3-bucket-name }}
         s3-bucket-region: ${{ inputs.s3-bucket-region }}
