@@ -49,11 +49,6 @@ runs:
       uses: open-turo/action-setup-tools@v3
       with:
         working-directory: ${{ inputs.working-directory }}
-    - name: Check for yarn.lock
-      id: check_yarn_lock
-      uses: andstor/file-existence-action@v3
-      with:
-        files: ${{ inputs.working-directory }}/yarn.lock
     - name: Compute lockfile hash
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
