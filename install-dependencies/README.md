@@ -42,7 +42,8 @@ jobs:
 ## Notes
 
 - By default, this action will perform actions/checkout as its first step.
-- This action detects the package manager via `action-setup-tools` (checks `package.json#packageManager`, then lock files: `pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`); it supports `pnpm`, `yarn`, and `npm`.
+- This action checks for a `yarn.lock` file to figure out which package manager
+  to use to install dependencies; it supports `npm` and `yarn`.
 - Use `working-directory` when the `package.json` lives in a subdirectory (e.g. a monorepo):
 
 ```yaml
@@ -72,7 +73,7 @@ jobs:
 | name | description |
 | --- | --- |
 | `cache-hit` | <p>Whether the cache was hit when installing dependencies</p> |
-| `package-manager` | <p>The package manager used to install dependencies (yarn, npm, or pnpm)</p> |
+| `package-manager` | <p>The package manager used to install dependencies</p> |
 <!-- action-docs-outputs source="action.yaml" -->
 <!-- action-docs-runs source="action.yaml" -->
 ## Runs
