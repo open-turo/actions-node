@@ -45,6 +45,7 @@ runs:
       with:
         fetch-depth: 0
     - name: Setup tools
+      id: setup_tools
       uses: open-turo/action-setup-tools@v3
       with:
         working-directory: ${{ inputs.working-directory }}
