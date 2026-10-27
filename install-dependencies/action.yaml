@@ -25,6 +25,9 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  cache-key-prefix:
+    required: false
+    description: Prefix for the node_modules cache key. Set this when several installs in the same repository share an S3 bucket, so their caches do not restore into each other. Defaults to the repository name followed by '/cache-node-modules'.
   working-directory:
     required: false
     description: Directory containing the package.json. Defaults to the repo root.
@@ -56,11 +59,11 @@ runs:
       run: |
         PM="${{ steps.setup_tools.outputs.package-manager }}"
         if [ "$PM" = "pnpm" ]; then
-          echo "hash=${{ hashFiles('**/pnpm-lock.yaml') }}" >> "$GITHUB_OUTPUT"
+          echo "hash=${{ hashFiles(format('{0}/**/pnpm-lock.yaml', inputs.working-directory)) }}" >> "$GITHUB_OUTPUT"
         elif [ "$PM" = "yarn" ]; then
-          echo "hash=${{ hashFiles('**/yarn.lock') }}" >> "$GITHUB_OUTPUT"
+          echo "hash=${{ hashFiles(format('{0}/**/yarn.lock', inputs.working-directory)) }}" >> "$GITHUB_OUTPUT"
         else
-          echo "hash=${{ hashFiles('**/package-lock.json') }}" >> "$GITHUB_OUTPUT"
+          echo "hash=${{ hashFiles(format('{0}/**/package-lock.json', inputs.working-directory)) }}" >> "$GITHUB_OUTPUT"
         fi
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
@@ -74,10 +77,11 @@ runs:
         restore-keys: ${{ env.cache-name }}-${{ runner.arch }}-
       env:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
-        cache-name: ${{ github.event.repository.name }}/cache-node-modules
+        cache-name: ${{ inputs.cache-key-prefix || format('{0}/cache-node-modules', github.event.repository.name) }}
     - name: Install dependencies (pnpm)
       if: steps.setup_tools.outputs.package-manager == 'pnpm'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: pnpm install --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
