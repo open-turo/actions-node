@@ -25,6 +25,9 @@ inputs:
   s3-bucket-region:
     required: false
     description: S3 bucket region to cache node_modules to speed up dependency installation.
+  cache-key-prefix:
+    required: false
+    description: Prefix for the node_modules cache key, followed by '/cache-node-modules'. Set this when several installs in the same repository share an S3 bucket, so their caches do not restore into each other. Defaults to the repository name.
   working-directory:
     required: false
     description: Directory containing the package.json. Defaults to the repo root.
@@ -53,14 +56,18 @@ runs:
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
       shell: bash
+      env:
+        PM: ${{ steps.setup_tools.outputs.package-manager }}
+        PNPM_LOCK_HASH: ${{ hashFiles(format('{0}/**/pnpm-lock.yaml', inputs.working-directory)) }}
+        YARN_LOCK_HASH: ${{ hashFiles(format('{0}/**/yarn.lock', inputs.working-directory)) }}
+        NPM_LOCK_HASH: ${{ hashFiles(format('{0}/**/package-lock.json', inputs.working-directory)) }}
       run: |
-        PM="${{ steps.setup_tools.outputs.package-manager }}"
         if [ "$PM" = "pnpm" ]; then
-          echo "hash=${{ hashFiles('**/pnpm-lock.yaml') }}" >> "$GITHUB_OUTPUT"
+          echo "hash=$PNPM_LOCK_HASH" >> "$GITHUB_OUTPUT"
         elif [ "$PM" = "yarn" ]; then
-          echo "hash=${{ hashFiles('**/yarn.lock') }}" >> "$GITHUB_OUTPUT"
+          echo "hash=$YARN_LOCK_HASH" >> "$GITHUB_OUTPUT"
         else
-          echo "hash=${{ hashFiles('**/package-lock.json') }}" >> "$GITHUB_OUTPUT"
+          echo "hash=$NPM_LOCK_HASH" >> "$GITHUB_OUTPUT"
         fi
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
@@ -74,10 +81,11 @@ runs:
         restore-keys: ${{ env.cache-name }}-${{ runner.arch }}-
       env:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
-        cache-name: ${{ github.event.repository.name }}/cache-node-modules
+        cache-name: ${{ format('{0}/cache-node-modules', inputs.cache-key-prefix || github.event.repository.name) }}
     - name: Install dependencies (pnpm)
       if: steps.setup_tools.outputs.package-manager == 'pnpm'
       shell: bash
+      working-directory: ${{ inputs.working-directory }}
       run: pnpm install --frozen-lockfile
       env:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
