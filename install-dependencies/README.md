@@ -65,7 +65,7 @@ jobs:
 | `npmrc-auth-file` | <p>Path to the npmrc file used for pnpm authentication. Sets PNPM<em>CONFIG</em>NPMRC<em>AUTH</em>FILE.</p> | `false` | `.npmrc` |
 | `s3-bucket-name` | <p>S3 bucket name to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
 | `s3-bucket-region` | <p>S3 bucket region to cache node_modules to speed up dependency installation.</p> | `false` | `""` |
-| `cache-key-prefix` | <p>Prefix for the node_modules cache key. Set this when several installs in the same repository share an S3 bucket, so their caches do not restore into each other. Defaults to the repository name followed by '/cache-node-modules'.</p> | `false` | `""` |
+| `cache-key-prefix` | <p>Prefix for the node_modules cache key, followed by '/cache-node-modules'. Set this when several installs in the same repository share an S3 bucket, so their caches do not restore into each other. Defaults to the repository name.</p> | `false` | `""` |
 | `working-directory` | <p>Directory containing the package.json. Defaults to the repo root.</p> | `false` | `.` |
 <!-- action-docs-inputs source="action.yaml" -->
 <!-- action-docs-outputs source="action.yaml" -->
