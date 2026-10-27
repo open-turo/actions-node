@@ -56,14 +56,18 @@ runs:
       if: inputs.s3-bucket-name != ''
       id: lockfile_hash
       shell: bash
+      env:
+        PM: ${{ steps.setup_tools.outputs.package-manager }}
+        PNPM_LOCK_HASH: ${{ hashFiles(format('{0}/**/pnpm-lock.yaml', inputs.working-directory)) }}
+        YARN_LOCK_HASH: ${{ hashFiles(format('{0}/**/yarn.lock', inputs.working-directory)) }}
+        NPM_LOCK_HASH: ${{ hashFiles(format('{0}/**/package-lock.json', inputs.working-directory)) }}
       run: |
-        PM="${{ steps.setup_tools.outputs.package-manager }}"
         if [ "$PM" = "pnpm" ]; then
-          echo "hash=${{ hashFiles(format('{0}/**/pnpm-lock.yaml', inputs.working-directory)) }}" >> "$GITHUB_OUTPUT"
+          echo "hash=$PNPM_LOCK_HASH" >> "$GITHUB_OUTPUT"
         elif [ "$PM" = "yarn" ]; then
-          echo "hash=${{ hashFiles(format('{0}/**/yarn.lock', inputs.working-directory)) }}" >> "$GITHUB_OUTPUT"
+          echo "hash=$YARN_LOCK_HASH" >> "$GITHUB_OUTPUT"
         else
-          echo "hash=${{ hashFiles(format('{0}/**/package-lock.json', inputs.working-directory)) }}" >> "$GITHUB_OUTPUT"
+          echo "hash=$NPM_LOCK_HASH" >> "$GITHUB_OUTPUT"
         fi
     - name: Load cached node_modules if available
       if: inputs.s3-bucket-name != ''
