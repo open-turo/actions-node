@@ -61,7 +61,7 @@ runs:
         NPM_AUTH_TOKEN: ${{ inputs.npm-auth-token }}
         NPM_TOKEN: ${{ inputs.npm-token }}
         PNPM_CONFIG_NPMRC_AUTH_FILE: ${{ inputs.npmrc-auth-file }}
-      run: pnpm run "$SCRIPT" ${SCRIPT_FLAGS:+-- $SCRIPT_FLAGS}
+      run: pnpm run "$SCRIPT" $SCRIPT_FLAGS
     - name: Run script (npm)
       if: ${{ steps.install_dependencies.outputs.package-manager == 'npm' && inputs.script != '' }}
       shell: bash
