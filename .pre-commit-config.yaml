@@ -1,3 +1,5 @@
+default_language_version:
+  node: system
 exclude: dist/.*
 repos:
   - repo: https://github.com/alessandrojcm/commitlint-pre-commit-hook
