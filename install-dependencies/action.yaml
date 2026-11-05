@@ -27,7 +27,7 @@ inputs:
     description: S3 bucket region to cache node_modules to speed up dependency installation.
   cache-key-prefix:
     required: false
-    description: Prefix for the node_modules cache key, followed by '/cache-node-modules'. Set this when several installs in the same repository share an S3 bucket, so their caches do not restore into each other. Defaults to the repository name.
+    description: Prefix for the node_modules cache key, followed by '/cache-node-modules-' and the package manager (pnpm, yarn or npm). Set this when several installs in the same repository share an S3 bucket, so their caches do not restore into each other. Defaults to the repository name.
   working-directory:
     required: false
     description: Directory containing the package.json. Defaults to the repo root.
