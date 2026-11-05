@@ -81,7 +81,7 @@ runs:
         restore-keys: ${{ env.cache-name }}-${{ runner.arch }}-
       env:
         AWS_REGION: ${{ inputs.s3-bucket-region }}
-        cache-name: ${{ format('{0}/cache-node-modules', inputs.cache-key-prefix || github.event.repository.name) }}
+        cache-name: ${{ format('{0}/cache-node-modules-{1}', inputs.cache-key-prefix || github.event.repository.name, steps.setup_tools.outputs.package-manager) }}
     - name: Install dependencies (pnpm)
       if: steps.setup_tools.outputs.package-manager == 'pnpm'
       shell: bash
